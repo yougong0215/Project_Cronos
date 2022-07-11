@@ -10,9 +10,19 @@ public class ObjectOrder : PoolAble
     float _currnetTime;
     Vector3 dir;
     float speed = 20;
-    
+
+
     bool isOrder = false;
     bool isAwaken = false;
+
+    public Vector3 PlayerCamPos
+    {
+        get
+        {
+            return new Vector3(Player.position.x, Player.position.y + 2, -10);
+        }
+    }
+
     private Transform _player = null;
     public Transform Player
     {
@@ -27,6 +37,20 @@ public class ObjectOrder : PoolAble
         }
     }
 
+    private Transform _enemy = null;
+    public Transform Enemy
+    {
+        get
+        {
+            if (_enemy == null)
+            {
+                _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Transform>();
+            }
+
+            return _enemy;
+        }
+    }
+
     private void OnEnable()
     {
         speed = 20;
@@ -35,13 +59,13 @@ public class ObjectOrder : PoolAble
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     private void FixedUpdate()
     {
-        if(isAwaken == false)
+        if (isAwaken == false)
             Awaken();
-        
+
     }
     void Awaken()
     {
@@ -55,7 +79,7 @@ public class ObjectOrder : PoolAble
         if (isOrder == true)
         {
             _orderTime += Time.deltaTime;
-            if (Mathf.Abs(Player.position.x - transform.position.x) < _orderTime && Mathf.Abs(Player.position.y - transform.position.y) < _orderTime)
+            if (Mathf.Abs(Enemy.position.x - transform.position.x) < _orderTime && Mathf.Abs(Enemy.position.y - transform.position.y) < _orderTime)
             {
                 transform.DOKill();
                 Debug.Log("しけし");
@@ -63,7 +87,7 @@ public class ObjectOrder : PoolAble
                 return;
             }
             _currnetTime = 0;
-            _angle = Mathf.Atan2(transform.position.y - Player.position.y, transform.position.x - Player.position.x) * Mathf.Rad2Deg;
+            _angle = Mathf.Atan2(transform.position.y - Enemy.position.y, transform.position.x - Enemy.position.x) * Mathf.Rad2Deg;
             //_angle = Mathf.Abs(_angle);
             transform.DORotate(new Vector3(0, 0, _angle + 90), 1f);
             dir.Normalize();
@@ -71,17 +95,24 @@ public class ObjectOrder : PoolAble
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<EnemyHPMaster>())
+        if (collision.GetComponent<EnemyHPMaster>())
         {
             _orderTime = 0;
             Debug.Log("中宜");
             _currnetTime = 0;
             isOrder = false;
-            GameManager.Instance._Camera.DOShakePosition(0.5f, 1, 3, 90);
+
             speed = 0;
             isAwaken = true;
             transform.SetParent(collision.transform);
-            transform.localPosition = transform.up *0.3f;
+            //transform.localPosition = transform.up * 0.3f;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.GetComponent<EnemyHPMaster>())
+        {
+            transform.position = collision.transform.position;
         }
     }
 }

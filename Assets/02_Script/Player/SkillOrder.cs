@@ -9,10 +9,16 @@ public class SkillOrder : MonoBehaviour
     {
         
     }
+    ObjectOrder order;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
+            order.transform.position = transform.position;
+            
+        }
     }
 }

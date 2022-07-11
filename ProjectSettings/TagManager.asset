@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - PlayerOrder
   layers:
   - Default
   - TransparentFX
@@ -14,6 +16,8 @@ TagManager:
   - 
   - 
   - 
+  - Player
+  - PlayerAttack
   - 
   - 
   - 
@@ -23,9 +27,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Platform
   - 
   - 
   - 

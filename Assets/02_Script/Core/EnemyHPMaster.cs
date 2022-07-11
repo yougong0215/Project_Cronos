@@ -6,7 +6,7 @@ public class EnemyHPMaster : PoolAble
 {
     enum MonsterCode
     {
-        Sans = 1,
+        Test = 1,
         Papuyrus = 2
     }
 
@@ -22,6 +22,7 @@ public class EnemyHPMaster : PoolAble
     Rigidbody2D rb;
     float currentTime = 0;
 
+    [SerializeField ]int _monsterType = 1;
     bool _bTimereaf = false;
     int _timecode = 0;
     MonsterCode _monsterCode;
@@ -64,7 +65,7 @@ public class EnemyHPMaster : PoolAble
     }
     private void TimeControl()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
 
             if (_bTimereaf == false)
@@ -80,19 +81,17 @@ public class EnemyHPMaster : PoolAble
     private void TimeLeaf()
     {
         if (_bTimereaf == false)
-        {       
-            transform.localEulerAngles += new Vector3(0, 0, 30) * Time.deltaTime;
-            transform.position += new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0) * 4 * Time.deltaTime;
+        {
+            MonsterAIMove();
             if (currentTime >= 0.1f)
             {
                 TimeSave();
             }
-
             _timecode = 0;
         }
         if (_bTimereaf == true)
         {
-            if (currentTime >= 0.00005f)
+            if (currentTime >= 0.1f)
             {
                 currentTime = 0;
                 if (_timecode > 29)
@@ -117,12 +116,14 @@ public class EnemyHPMaster : PoolAble
         TimeControl();
         TimeLeaf();
     }
-
+    float _currentTime2 = 0;
     private void MonsterAIMove()
     {
-        switch (_timecode)
+        switch (_monsterType)
         {
-            case (int)MonsterCode.Sans:
+            case (int)MonsterCode.Test:
+                _currentTime2 += Time.deltaTime;
+                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * Time.deltaTime;
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
@@ -132,7 +133,7 @@ public class EnemyHPMaster : PoolAble
     {
         switch (_timecode)
         {
-            case (int)MonsterCode.Sans:
+            case (int)MonsterCode.Test:
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;

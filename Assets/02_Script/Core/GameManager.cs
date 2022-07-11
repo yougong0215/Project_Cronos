@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
         {
             if(_camera == null)
             {
-                _camera = GameObject.Find("MainCamera").GetComponent<Camera>();
+                _camera = GameObject.Find("PlayerCam").GetComponent<Camera>();
             }
             return _camera;
         }

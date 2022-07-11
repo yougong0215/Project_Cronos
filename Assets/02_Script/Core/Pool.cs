@@ -40,6 +40,7 @@ public class Pool<T> where T : PoolAble
 
     public void Push(T obj)
     {
+        obj.transform.SetParent(GameObject.Find("GameManager").transform);
         obj.gameObject.SetActive(false);
         _pool.Push(obj);
     }
