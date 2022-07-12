@@ -6,11 +6,19 @@ public class EnemyHPMaster : PoolAble
 {
     enum MonsterCode
     {
+        Defualt = 0,
         Test = 1,
         Papuyrus = 2
     }
 
+    float _currentTime2 = 0;
+    /// <summary>
+    /// 0이거나 1이거나
+    /// </summary>
+    float _canMove = 1;
+    float _MoveTimeArrange = 1;
 
+    PurpleBullet _purpleBullet;
     Word _damageUI;
     [SerializeField] protected List<Vector4> _timeLeaf1;
     protected List<Sprite> _timeLeaf2;
@@ -23,9 +31,12 @@ public class EnemyHPMaster : PoolAble
     float currentTime = 0;
 
     [SerializeField] int _monsterType = 1;
-    bool _bTimereaf = false;
     int _timecode = 0;
     MonsterCode _monsterCode;
+
+    float _attackTime = 0;
+
+    bool _TimeDamaged;
 
     private Transform _player = null;
     public Transform Player
@@ -44,17 +55,24 @@ public class EnemyHPMaster : PoolAble
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        for (int i = 0; i < 300; i++)
+        for (int i = 0; i < 30; i++)
         {
             _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, _hp, transform.localEulerAngles.z));
         }
     }
+    private void OnEnable()
+    {
+        _attackTime = 0;
+        _currentTime2 = 0;
+        currentTime = 0;
+    }
+
     private void TimeSave()
     {
-        if (currentTime >= 0.01f)
+        if (currentTime >= 0.1f * GameManager.Instance.TimeArrange())
         {
             currentTime = 0;
-            for (int i = 299; i > 0; i--)
+            for (int i = 29; i > 0; i--)
             {
                 if (i <= 0)
                     break;
@@ -63,46 +81,39 @@ public class EnemyHPMaster : PoolAble
             _timeLeaf1[0] = new Vector4(transform.position.x, transform.position.y, _hp, transform.rotation.z);
         }
     }
-    private void TimeControl()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-
-            if (_bTimereaf == false)
-            {
-
-
-                rb.gravityScale = 1;
-                _bTimereaf = true;
-            }
-            else if (_bTimereaf == true)
-            {
-
-                rb.gravityScale = 1;
-                _bTimereaf = false;
-                _hp -= TimeDamager;
-                Debug.Log(_hp);
-                TimeDamager = 0;
-            }
-        }
-    }
     private void TimeLeaf()
     {
-        if (_bTimereaf == false)
+        if (GameManager.Instance.Timer() == false)
         {
+            rb.gravityScale = 1;
             MonsterAIMove();
-                TimeSave();
+            MonsterAIAttack();
+            TimeSave();
             _timecode = 0;
+            if(_TimeDamaged == true)
+            {
+                _TimeDamaged = false;
+                _hp -= TimeDamager;
+                _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
+                _damageUI.transform.position = transform.position;
+                if (TimeDamager > 500)
+                {
+                    _damageUI.ShowText(TimeDamager);
+                }
+
+
+            }
         }
-        if (_bTimereaf == true)
+        if (GameManager.Instance.Timer() == true)
         {
-            if (currentTime > 0.01f)
+            rb.gravityScale = 1;
+            _TimeDamaged = true;
+            if (currentTime > 0.1f * GameManager.Instance.TimeArrange())
             {
                 currentTime = 0;
-                if (_timecode > 299)
+                if (_timecode > 29)
                 {
                     rb.gravityScale = 1;
-                    _bTimereaf = false;
                     return;
                 }
 
@@ -113,37 +124,31 @@ public class EnemyHPMaster : PoolAble
                 rb.velocity = Vector3.zero;
                 rb.gravityScale = 0;
             }
+            
+            Debug.Log(_hp);
+
         }
     }
     void Update()
     {
         if (_hp < 0)
         {
-            
+
             transform.position = new Vector3(-1000, 1000);
             rb.gravityScale = 0;
-            if(_timeLeaf1[0] == _timeLeaf1[30])
+            if (_timeLeaf1[0] == _timeLeaf1[29])
             {
                 Debug.Log("여서 푸쉬");
             }
         }
-        TimeControl();
         TimeLeaf();
-        if(transform.position.z != 0)
+
+        if (transform.position.z != 0)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         }
-                currentTime += Time.deltaTime;
+        currentTime += Time.deltaTime;
     }
-    private void FixedUpdate()
-    {
-        Debug.Log(_bTimereaf);
-    }
-    float _currentTime2 = 0;
-    /// <summary>
-    /// 0이거나 1이거나
-    /// </summary>
-    int _canMove = 1;
 
     public void SetMove(int value)
     {
@@ -156,17 +161,26 @@ public class EnemyHPMaster : PoolAble
         {
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
-                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * _canMove * Time.deltaTime;
+                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * GameManager.Instance.CanMove() * Time.deltaTime;
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
         }
     }
+
     private void MonsterAIAttack()
     {
-        switch (_timecode)
+        _attackTime += Time.deltaTime;
+        switch (_monsterType)
         {
             case (int)MonsterCode.Test:
+                if (_attackTime >= 2f)
+                {
+                    _attackTime = 0;
+                    _purpleBullet = PoolManager.Instance.Pop("BulletTest") as PurpleBullet;
+                    _purpleBullet.Sex(GetComponent<Rigidbody2D>());
+                    _purpleBullet.transform.position = transform.position;
+                }
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
@@ -180,18 +194,11 @@ public class EnemyHPMaster : PoolAble
         _damageUI.transform.position = transform.position;
         _damageUI.ShowText(damage);
 
-        if (_bTimereaf == false)
+        if (GameManager.Instance.Timer() == false)
             _hp -= damage;
-        if (_bTimereaf == true)
+        if (GameManager.Instance.Timer() == true)
         {
             TimeDamager += damage;
         }
-    }
-
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-
-
     }
 }

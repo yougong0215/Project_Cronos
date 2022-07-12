@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MeChu : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class MeChu : MonoBehaviour
         Third = 3
     }
     int _AttackNow = 0;
+    bool _attackNummm = false;
 
     void Start()
     {
@@ -73,17 +75,32 @@ public class MeChu : MonoBehaviour
             if(isDownAttack == true)
             {
                 isDownAttackUpper = true;
-                if (gameObject.name == Left)
+
+                if (_attackNummm == true)
                 {
-                    _box.enabled = true;
-                    transform.localPosition = new Vector3(2, 0.5f, 0);
-                    transform.localEulerAngles = new Vector3(0, 0, 90);
+                    if (gameObject.name == Left)
+                        transform.DOLocalMove(new Vector3(Random.Range(-0.4f, 0f), Random.Range(0.2f, 0.7f), 0), 0.1f);
+                    if (gameObject.name == Right)
+                    {
+                        _box.enabled = true;
+                        transform.DOLocalMove(new Vector3(Random.Range(1.6f, 2f), Random.Range(0.2f, 0.7f), 0), 0.1f);
+                        transform.localEulerAngles = new Vector3(0, 0, 90);
+                    }
+
+                    _attackNummm = false;
                 }
-                if (gameObject.name == Right)
+                else if (_attackNummm ==false)
                 {
-                    _box.enabled = true;
-                    transform.localPosition = new Vector3(2.3f, 0.4f, 0);
-                    transform.localEulerAngles = new Vector3(0, 0, 90);
+                    if (gameObject.name == Right)
+                        transform.DOLocalMove(new Vector3(Random.Range(-0.4f, 0f), Random.Range(0.2f, 0.7f), 0), 0.1f);
+                    if (gameObject.name == Left)
+                    {
+                        _box.enabled = true;
+                        transform.DOLocalMove(new Vector3(Random.Range(1.8f, 2.2f), Random.Range(0.2f, 0.7f), 0), 0.1f);
+                        transform.localEulerAngles = new Vector3(0, 0, 90);
+                    }
+
+                    _attackNummm = true;
                 }
                 currentTime = 0;
             }
