@@ -30,7 +30,7 @@ public class MeChu : MonoBehaviour
     void Start()
     {
         OriginPos = transform.localPosition;
-        OriginRot = transform.rotation.z;
+        OriginRot = transform.rotation.z; 
         _box = GetComponent<BoxCollider2D>();
         _rigid = GetComponent<Rigidbody2D>();
         _box.enabled = false;
@@ -55,11 +55,7 @@ public class MeChu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (gameObject.name == Right)
-            {
-                transform.localPosition = new Vector3(2, 1, 0);
-                transform.rotation = new Quaternion(0, 0, 95, 0);
-            }
+
             isAttack = true;
             if ((int)AttackNumber.First == _AttackNow)
             {
