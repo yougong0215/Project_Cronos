@@ -11,9 +11,10 @@ public class ObjectOrder : PoolAble
     Vector3 dir;
     float speed = 20;
 
-
+    
     bool isOrder = false;
     bool isAwaken = false;
+    bool isPush = false;
 
     public Vector3 PlayerCamPos
     {
@@ -55,6 +56,11 @@ public class ObjectOrder : PoolAble
     {
         speed = 20;
         dir = Vector2.up;
+        isOrder = false;
+        isAwaken = false;
+        isPush = false;
+        _currnetTime = 0;
+        _orderTime = 0;
     }
     // Update is called once per frame
     void Update()
@@ -101,7 +107,7 @@ public class ObjectOrder : PoolAble
             Debug.Log("Ãæµ¹");
             _currnetTime = 0;
             isOrder = false;
-
+            collision.GetComponent<EnemyHPMaster>().GetDamage(1);
             speed = 0;
             isAwaken = true;
             transform.SetParent(collision.transform);
@@ -112,7 +118,24 @@ public class ObjectOrder : PoolAble
     {
         if (collision.GetComponent<EnemyHPMaster>())
         {
-            transform.position = collision.transform.position;
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("»Ì±â");
+                isPush = true;
+                transform.localPosition = transform.up * -1.3f;
+                StartCoroutine(Push());
+                collision.GetComponent<EnemyHPMaster>().GetDamage(3);
+            }
+            if (isPush == false)
+            {
+                transform.position = collision.transform.position;
+            }
         }
+    }
+
+    IEnumerator Push()
+    {
+        yield return new WaitForSeconds(0.3f);
+        PoolManager.Instance.Push(this);
     }
 }

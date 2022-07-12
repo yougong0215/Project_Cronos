@@ -108,7 +108,10 @@ public class EnemyHPMaster : PoolAble
     }
     void Update()
     {
-
+        if(_hp < 0)
+        {
+            Debug.Log("µÚÁü");
+        }
     }
     private void FixedUpdate()
     {
@@ -141,6 +144,10 @@ public class EnemyHPMaster : PoolAble
     }
     
 
+    public void GetDamage(int damage)
+    {
+        _hp -= damage;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         

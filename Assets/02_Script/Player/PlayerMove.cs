@@ -28,13 +28,22 @@ public class PlayerMove : MonoBehaviour
 
         }
 
+        if(rigid.velocity.x >= 0.1f)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (rigid.velocity.x < -0.1f)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+
     }
 
 
     void FixedUpdate()
     {
         float h = Input.GetAxisRaw("Horizontal");  
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse); 
+        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
 
 
         if (rigid.velocity.x > maxSpeed)
