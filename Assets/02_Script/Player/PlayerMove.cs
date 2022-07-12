@@ -7,11 +7,15 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float maxSpeed;// 최대속도 설정
     [SerializeField] float jumpPower; // 점프파워 
     Rigidbody2D rigid;
+    MeChu _mechu;
 
     int _jumpCount = 0;
     int _maxJump =1;
+    int _DirectValue =1;
+
     void Awake()
     {
+        _mechu = GameObject.Find("MeChuLeft").GetComponent<MeChu>();
         rigid = GetComponent<Rigidbody2D>();
     }
 
@@ -28,17 +32,25 @@ public class PlayerMove : MonoBehaviour
 
         }
 
-        if(rigid.velocity.x >= 0.1f)
+        if (_mechu.GetBool() == false)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            if (rigid.velocity.x >= 0.1f)
+            {
+                _DirectValue = 1;
+                transform.localScale = new Vector3(_DirectValue, 1, 1);
+            }
+            else if (rigid.velocity.x < -0.1f)
+            {
+                _DirectValue = -1;
+                transform.localScale = new Vector3(_DirectValue, 1, 1);
+            }
         }
-        else if (rigid.velocity.x < -0.1f)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-
     }
 
+    public int GetDirect()
+    {
+        return _DirectValue;
+    }
 
     void FixedUpdate()
     {

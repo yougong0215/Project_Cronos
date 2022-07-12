@@ -120,13 +120,23 @@ public class EnemyHPMaster : PoolAble
         TimeLeaf();
     }
     float _currentTime2 = 0;
+    /// <summary>
+    /// 0이거나 1이거나
+    /// </summary>
+    int _canMove = 1;
+
+    public void SetMove(int value)
+    {
+        _canMove = value;
+    }
+
     private void MonsterAIMove()
     {
         switch (_monsterType)
         {
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
-                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * Time.deltaTime;
+                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * _canMove * Time.deltaTime;
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
