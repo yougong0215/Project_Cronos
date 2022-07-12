@@ -119,7 +119,13 @@ public class EnemyHPMaster : PoolAble
     {
         if (_hp < 0)
         {
-            Debug.Log(_hp);
+            
+            transform.position = new Vector3(-1000, 1000);
+            rb.gravityScale = 0;
+            if(_timeLeaf1[0] == _timeLeaf1[30])
+            {
+                Debug.Log("¿©¼­ Çª½¬");
+            }
         }
         TimeControl();
         TimeLeaf();

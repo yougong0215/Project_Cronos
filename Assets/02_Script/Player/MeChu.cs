@@ -21,6 +21,7 @@ public class MeChu : MonoBehaviour
     bool isAttack = false;
     bool isDownAttack = false;
     bool isDownAttackUpper = false;
+    bool isDownAttakb = false;
 
     enum AttackNumber
     {
@@ -87,9 +88,10 @@ public class MeChu : MonoBehaviour
                 currentTime = 0;
             }
 
-            if (Input.GetKey(KeyCode.S) && isDownAttack == false)
+            if (Input.GetKey(KeyCode.S) && isDownAttack == false && isDownAttakb ==false)
             {
                 isDownAttack = true;
+                isDownAttakb = true;
                 if (gameObject.name == Left)
                 {
                     _box.enabled = true;
@@ -161,7 +163,8 @@ public class MeChu : MonoBehaviour
             StartCoroutine(CoolDown());
             isAttack = false;
             isDownAttack = false;
-            isDownAttackUpper = false;  
+            isDownAttackUpper = false;
+            isDownAttakb = false;
             _AttackNow = 0;
         }
         if (isAttack == false)

@@ -2,23 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolManager
+public class PoolManager : MonoBehaviour
 {
-    public static PoolManager Instance;
+    
+    [SerializeField] private List<PoolAble> _PoolList;
+
+    private static PoolManager _instance = null;
+    public static PoolManager Instance
+    {
+        get
+        {
+            if(_instance == null)
+            {
+                _instance = GameObject.FindGameObjectWithTag("Pool").GetComponent<PoolManager>();
+            }
+            return _instance;
+        }
+    }
 
     private GameObject _Item;
 
     private Dictionary<string, Pool<PoolAble>> _pools = new Dictionary<string, Pool<PoolAble>>();
 
-    private Transform _trmParent;
 
-    public PoolManager(Transform trmParent)
+    private void Awake()
     {
-        _trmParent = trmParent;
+        foreach (PoolAble p in _PoolList)
+        {
+            CreatePool(p, 3);
+        }
     }
+
     public void CreatePool(PoolAble prefab, int cnt = 5)
     {
-        Pool<PoolAble> pool = new Pool<PoolAble>(prefab, _trmParent, cnt);
+        Pool<PoolAble> pool = new Pool<PoolAble>(prefab, transform, cnt);
         _pools.Add(prefab.gameObject.name, pool);
     }
 
