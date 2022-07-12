@@ -22,7 +22,7 @@ public class EnemyHPMaster : PoolAble
     Rigidbody2D rb;
     float currentTime = 0;
 
-    [SerializeField ]int _monsterType = 1;
+    [SerializeField] int _monsterType = 1;
     bool _bTimereaf = false;
     int _timecode = 0;
     MonsterCode _monsterCode;
@@ -32,7 +32,7 @@ public class EnemyHPMaster : PoolAble
     {
         get
         {
-            if(_player == null)
+            if (_player == null)
             {
                 _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             }
@@ -44,21 +44,21 @@ public class EnemyHPMaster : PoolAble
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        for(int i = 0; i< 30; i++)
+        for (int i = 0; i < 300; i++)
         {
             _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, _hp, transform.rotation.z));
         }
     }
     private void TimeSave()
     {
-        if(currentTime >= 0.1f)
+        if (currentTime >= 0.01f)
         {
             currentTime = 0;
-            for (int i =29; i> 0; i--)
+            for (int i = 299; i > 0; i--)
             {
                 if (i == 0)
                     break;
-                _timeLeaf1[i] = _timeLeaf1[i-1];
+                _timeLeaf1[i] = _timeLeaf1[i - 1];
             }
             _timeLeaf1[0] = new Vector4(transform.position.x, transform.position.y, _hp, transform.rotation.z);
         }
@@ -70,11 +70,19 @@ public class EnemyHPMaster : PoolAble
 
             if (_bTimereaf == false)
             {
+
+
+                rb.gravityScale = 1;
                 _bTimereaf = true;
             }
             else if (_bTimereaf == true)
             {
+
+                rb.gravityScale = 1;
                 _bTimereaf = false;
+                _hp -= TimeDamager;
+                Debug.Log(_hp);
+                TimeDamager = 0;
             }
         }
     }
@@ -91,32 +99,37 @@ public class EnemyHPMaster : PoolAble
         }
         if (_bTimereaf == true)
         {
-            if (currentTime >= 0.1f)
+            if (currentTime >= 0.01f)
             {
                 currentTime = 0;
-                if (_timecode > 29)
+                if (_timecode > 299)
+                {
+                    rb.gravityScale = 1;
+                    _bTimereaf = false;
                     return;
+                }
 
-                Debug.Log(_timecode);
                 _timecode++;
                 _hp = (int)_timeLeaf1[_timecode - 1].z;
                 transform.position = _timeLeaf1[_timecode - 1];
                 transform.localEulerAngles = new Vector3(0, 0, _timeLeaf1[_timecode - 1].w);
-
+                rb.velocity = Vector3.zero;
+                rb.gravityScale = 0;
             }
         }
     }
     void Update()
     {
-        if(_hp < 0)
+        if (_hp < 0)
         {
-            Debug.Log("µÚÁü");
+            Debug.Log(_hp);
         }
+        TimeControl();
     }
     private void FixedUpdate()
     {
+        Debug.Log(_bTimereaf);
         currentTime += Time.deltaTime;
-        TimeControl();
         TimeLeaf();
     }
     float _currentTime2 = 0;
@@ -152,15 +165,24 @@ public class EnemyHPMaster : PoolAble
                 break;
         }
     }
+    int TimeDamager = 0;
     
-
     public void GetDamage(int damage)
     {
-        _hp -= damage;
+
+
+        if (_bTimereaf == false)
+            _hp -= damage;
+        if(_bTimereaf == true)
+        {
+            TimeDamager += damage;
+        }
     }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-    
+
+
     }
 }

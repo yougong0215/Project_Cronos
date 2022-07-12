@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
+    Transform DamagedUI;
     private static GameManager instance = null;
     public static GameManager Instance
     {
@@ -23,13 +23,13 @@ public class GameManager : MonoBehaviour
     }
 
     private Camera _camera = null;
-        public Camera _Camera
+    public Camera _Camera
     {
         get
         {
-            if(_camera == null)
+            if (_camera == null)
             {
-                _camera = GameObject.Find("PlayerCam").GetComponent<Camera>();
+                _camera = GameObject.Find("MainCamera").GetComponent<Camera>();
             }
             return _camera;
         }
@@ -44,6 +44,6 @@ public class GameManager : MonoBehaviour
             PoolManager.Instance.CreatePool(p, 3);
         }
 
-
     }
+
 }
