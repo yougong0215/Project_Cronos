@@ -11,7 +11,7 @@ public class EnemyHPMaster : PoolAble
     }
 
 
-
+    Word _damageUI;
     [SerializeField] protected List<Vector4> _timeLeaf1;
     protected List<Sprite> _timeLeaf2;
     // x = À§Ä¡
@@ -46,7 +46,7 @@ public class EnemyHPMaster : PoolAble
         rb = GetComponent<Rigidbody2D>();
         for (int i = 0; i < 300; i++)
         {
-            _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, _hp, transform.rotation.z));
+            _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, _hp, transform.localEulerAngles.z));
         }
     }
     private void TimeSave()
@@ -56,7 +56,7 @@ public class EnemyHPMaster : PoolAble
             currentTime = 0;
             for (int i = 299; i > 0; i--)
             {
-                if (i == 0)
+                if (i <= 0)
                     break;
                 _timeLeaf1[i] = _timeLeaf1[i - 1];
             }
@@ -91,15 +91,12 @@ public class EnemyHPMaster : PoolAble
         if (_bTimereaf == false)
         {
             MonsterAIMove();
-            if (currentTime >= 0.1f)
-            {
                 TimeSave();
-            }
             _timecode = 0;
         }
         if (_bTimereaf == true)
         {
-            if (currentTime >= 0.01f)
+            if (currentTime > 0.01f)
             {
                 currentTime = 0;
                 if (_timecode > 299)
@@ -125,12 +122,16 @@ public class EnemyHPMaster : PoolAble
             Debug.Log(_hp);
         }
         TimeControl();
+        TimeLeaf();
+        if(transform.position.z != 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        }
+                currentTime += Time.deltaTime;
     }
     private void FixedUpdate()
     {
         Debug.Log(_bTimereaf);
-        currentTime += Time.deltaTime;
-        TimeLeaf();
     }
     float _currentTime2 = 0;
     /// <summary>
@@ -166,14 +167,16 @@ public class EnemyHPMaster : PoolAble
         }
     }
     int TimeDamager = 0;
-    
+
     public void GetDamage(int damage)
     {
-
+        _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
+        _damageUI.transform.position = transform.position;
+        _damageUI.ShowText(damage);
 
         if (_bTimereaf == false)
             _hp -= damage;
-        if(_bTimereaf == true)
+        if (_bTimereaf == true)
         {
             TimeDamager += damage;
         }

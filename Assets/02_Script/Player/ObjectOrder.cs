@@ -11,7 +11,7 @@ public class ObjectOrder : PoolAble
     Vector3 dir;
     float speed = 20;
 
-    
+    Word _damageUI;
     bool isOrder = false;
     bool isAwaken = false;
     bool isPush = false;
@@ -55,6 +55,7 @@ public class ObjectOrder : PoolAble
     private void OnEnable()
     {
         speed = 20;
+        transform.localEulerAngles = new Vector3(0, 0, 0);
         dir = Vector2.up;
         isOrder = false;
         isAwaken = false;
@@ -88,7 +89,6 @@ public class ObjectOrder : PoolAble
             if (Mathf.Abs(Enemy.position.x - transform.position.x) < _orderTime && Mathf.Abs(Enemy.position.y - transform.position.y) < _orderTime)
             {
                 transform.DOKill();
-                Debug.Log("������");
                 this.transform.rotation = Quaternion.AngleAxis(_angle + 90, Vector3.forward);
                 return;
             }
@@ -104,7 +104,9 @@ public class ObjectOrder : PoolAble
         if (collision.GetComponent<EnemyHPMaster>())
         {
             _orderTime = 0;
-            Debug.Log("�浹");
+            _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
+            _damageUI.transform.position = transform.position;
+            _damageUI.ShowText(1);
             _currnetTime = 0;
             isOrder = false;
             collision.GetComponent<EnemyHPMaster>().GetDamage(1);
@@ -120,7 +122,9 @@ public class ObjectOrder : PoolAble
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("�̱�");
+                _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
+                _damageUI.transform.position = transform.position;
+                _damageUI.ShowText(3);
                 isPush = true;
                 transform.localPosition = transform.up * -1.3f;
                 StartCoroutine(Push());
@@ -130,6 +134,13 @@ public class ObjectOrder : PoolAble
             {
                 transform.position = collision.transform.position;
             }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<EnemyHPMaster>())
+        {
+            PoolManager.Instance.Push(this);
         }
     }
 
