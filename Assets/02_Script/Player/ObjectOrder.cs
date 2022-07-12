@@ -88,7 +88,7 @@ public class ObjectOrder : PoolAble
             if (Mathf.Abs(Enemy.position.x - transform.position.x) < _orderTime && Mathf.Abs(Enemy.position.y - transform.position.y) < _orderTime)
             {
                 transform.DOKill();
-                Debug.Log("¤·¤±¤·");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 this.transform.rotation = Quaternion.AngleAxis(_angle + 90, Vector3.forward);
                 return;
             }
@@ -104,7 +104,7 @@ public class ObjectOrder : PoolAble
         if (collision.GetComponent<EnemyHPMaster>())
         {
             _orderTime = 0;
-            Debug.Log("Ãæµ¹");
+            Debug.Log("ï¿½æµ¹");
             _currnetTime = 0;
             isOrder = false;
             collision.GetComponent<EnemyHPMaster>().GetDamage(1);
@@ -120,7 +120,7 @@ public class ObjectOrder : PoolAble
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("»Ì±â");
+                Debug.Log("ï¿½Ì±ï¿½");
                 isPush = true;
                 transform.localPosition = transform.up * -1.3f;
                 StartCoroutine(Push());

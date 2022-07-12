@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField] float maxSpeed;// ÃÖ´ë¼Óµµ ¼³Á¤
-    [SerializeField] float jumpPower; // Á¡ÇÁÆÄ¿ö 
+    [SerializeField] float maxSpeed;// ï¿½Ö´ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] float jumpPower; // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ 
     Rigidbody2D rigid;
 
     int _jumpCount = 0;
