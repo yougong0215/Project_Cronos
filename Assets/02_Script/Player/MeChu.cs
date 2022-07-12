@@ -10,7 +10,7 @@ public class MeChu : MonoBehaviour
     const string Left = "MeChuLeft";
     Vector2 MousePos;
     Vector3 OriginPos;
-    float OriginRot;
+    Vector3 OriginRot;
     float currentTime = 0;
 
     float speed = 0;
@@ -30,7 +30,11 @@ public class MeChu : MonoBehaviour
     void Start()
     {
         OriginPos = transform.localPosition;
-        OriginRot = transform.rotation.z; 
+        if (gameObject.name == Left)
+            OriginRot = 20;
+        if (gameObject.name == Right)
+            OriginRot = 340;
+
         _box = GetComponent<BoxCollider2D>();
         _rigid = GetComponent<Rigidbody2D>();
         _box.enabled = false;
@@ -66,7 +70,7 @@ public class MeChu : MonoBehaviour
                 if (gameObject.name == Right)
                 {
                     transform.localPosition = new Vector3(2, 1, 0);
-                    transform.rotation = new Quaternion(0, 0, 95, 0);
+                    transform.localEulerAngles = new Vector3(0, 95, 0);
                 }
             }
             if ((int)AttackNumber.Second == _AttackNow)
@@ -103,6 +107,7 @@ public class MeChu : MonoBehaviour
         if(isAttack == false)
         {
             transform.localPosition = OriginPos ;
+            transform.localEulerAngles = OriginRot;
             currentTime = 0;
         }
     }
