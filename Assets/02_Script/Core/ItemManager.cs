@@ -9,6 +9,7 @@ public class ItemManager : Singleton<ItemManager>
     bool _Reverse = false ; // 불사의 토템
     bool _Liandri = false; //리안드리
     bool _Flying = false; // 활공
+    bool _Punching = true; // 공격횟수 추가
 
     int FirstItem = 0;
     int SecondItem = 0;
@@ -38,6 +39,10 @@ public class ItemManager : Singleton<ItemManager>
     public bool GetFlying()
     {
         return _Flying;
+    }
+    public bool GetPunching()
+    {
+        return _Punching;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

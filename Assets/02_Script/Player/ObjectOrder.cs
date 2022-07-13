@@ -129,6 +129,7 @@ public class ObjectOrder : PoolAble
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
+                collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
                 _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
                 _damageUI.transform.position = transform.position;
                 _damageUI.ShowText(3);

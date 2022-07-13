@@ -66,7 +66,7 @@ public class PurpleBullet : PoolAble
 
     public void Sex(Rigidbody2D _ms)
     {
-        for (int i = 29; i > 0; i--)
+        for (int i = 29; i >= 0; i--)
         {
             if (i < 0)
                 break;
@@ -81,7 +81,7 @@ public class PurpleBullet : PoolAble
         }
         if (_ms.velocity.x < -0f)
         {
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, 1);
             dir = new Vector3(-1, 0);
         }
     }
@@ -99,6 +99,13 @@ public class PurpleBullet : PoolAble
             {
                 PoolManager.Instance.Push(this);
             }
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.GetComponent<PlayerHPMaster>())
+        {
+            collision.GetComponent<PlayerHPMaster>().GetDamage(1);
         }
     }
 }

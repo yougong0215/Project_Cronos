@@ -15,18 +15,6 @@ public class GameManager : Singleton<GameManager>
     float _MoveTimeArrange = 1;
     bool _TimeStop = false;
 
-    private Camera _camera = null;
-    public Camera _Camera
-    {
-        get
-        {
-            if (_camera == null)
-            {
-                _camera = GameObject.Find("MainCamera").GetComponent<Camera>();
-            }
-            return _camera;
-        }
-    }
     private void Update()
     {
         if (_TimeStop == false)

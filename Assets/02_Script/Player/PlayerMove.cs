@@ -11,8 +11,8 @@ public class PlayerMove : MonoBehaviour
     EdgeCollider2D _edge;
 
     int _jumpCount = 0;
-    int _maxJump =1;
-    int _DirectValue =1;
+    int _maxJump = 1;
+    int _DirectValue = 1;
     bool Move = false;
 
     void Awake()
@@ -24,10 +24,16 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
+        {
+            GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+        }
+
         if (Input.GetButtonDown("Jump") && _jumpCount < _maxJump)
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             _jumpCount++;
+
         }
         if (Input.GetButtonUp("Horizontal"))
         {
@@ -45,10 +51,11 @@ public class PlayerMove : MonoBehaviour
             else if (rigid.velocity.x < -0.1f)
             {
                 _DirectValue = -1;
-                transform.localScale = new Vector3(_DirectValue* 0.4f, 1 * 0.4f, 1);
+                transform.localScale = new Vector3(_DirectValue * 0.4f, 1 * 0.4f, 1);
             }
         }
     }
+
 
     public int GetDirect()
     {
@@ -67,14 +74,14 @@ public class PlayerMove : MonoBehaviour
         {
             Move = true;
         }
-        else if( h == 0)
+        else if (h == 0)
             Move = false;
 
         if (rigid.velocity.x > maxSpeed)
             rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
-        else if (rigid.velocity.x < maxSpeed * (-1)) 
+        else if (rigid.velocity.x < maxSpeed * (-1))
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
-       
+
 
         if (rigid.velocity.y < 0)
         {
@@ -95,14 +102,20 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
-        Debug.DrawRay(transform.position, new Vector3(transform.position.x, transform.position.y - 1,transform.position.z));
+        Debug.DrawRay(transform.position, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z));
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.layer == 20 && (Mathf.Abs(rigid.velocity.y) < 0.1f || Mathf.Abs(rigid.velocity.y) == 0))
         {
             _jumpCount = 0;
-        }
-    }
 
+
+        }
+        if (collision.gameObject.layer == 21 && (Mathf.Abs(rigid.velocity.y) < 0.1f || Mathf.Abs(rigid.velocity.y) == 0))
+        {
+            _jumpCount = 0;
+        }
+
+    }
 }
