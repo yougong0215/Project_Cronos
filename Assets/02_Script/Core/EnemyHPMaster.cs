@@ -86,7 +86,7 @@ public class EnemyHPMaster : PoolAble
     }
     private void TimeLeaf()
     {
-        if (GameManager.Instance.Timer() == false)
+        if (GameManager.Instance.Timer() == false && GameManager.Instance.TimeArrange() != 10)
         {
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
             MonsterAIMove();
@@ -177,7 +177,7 @@ public class EnemyHPMaster : PoolAble
         {
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
-                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * GameManager.Instance.CanMove() * Time.deltaTime;
+                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * GameManager.Instance.CanMove() * _canMove * Time.deltaTime;
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
@@ -217,9 +217,9 @@ public class EnemyHPMaster : PoolAble
             StartCoroutine(LiandriTick(0.5f));
         }
 
-        if (GameManager.Instance.Timer() == false)
+        if (GameManager.Instance.Timer() == false || GameManager.Instance.TimeArrange() != 10)
             _hp -= damage;
-        if (GameManager.Instance.Timer() == true)
+        if (GameManager.Instance.Timer() == true || GameManager.Instance.TimeArrange() == 10)
         {
             TimeDamager += damage;
         }

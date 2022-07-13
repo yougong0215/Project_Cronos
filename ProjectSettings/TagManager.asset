@@ -8,6 +8,7 @@ TagManager:
   - PlayerOrder
   - Pool
   - EnemyAttack
+  - DownPlatform
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Enemy
   - 
   - Player
   - PlayerAttack
@@ -30,8 +31,8 @@ TagManager:
   - 
   - 
   - Platform
-  - 
-  - 
+  - DownPlatform
+  - CanPlatForm
   - 
   - 
   - 
