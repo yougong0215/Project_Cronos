@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     int _jumpCount = 0;
     int _maxJump =1;
     int _DirectValue =1;
+    bool Move = false;
 
     void Awake()
     {
@@ -51,12 +52,21 @@ public class PlayerMove : MonoBehaviour
     {
         return _DirectValue;
     }
+    public bool GetMove()
+    {
+        return Move;
+    }
 
     void FixedUpdate()
     {
-        float h = Input.GetAxisRaw("Horizontal");  
+        float h = Input.GetAxisRaw("Horizontal");
         rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-
+        if (h != 0)
+        {
+            Move = true;
+        }
+        else if( h == 0)
+            Move = false;
 
         if (rigid.velocity.x > maxSpeed)
             rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
