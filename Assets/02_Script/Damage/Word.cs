@@ -46,7 +46,7 @@ public class Word : PoolAble
     void Update()
     {
         _currentTime += Time.deltaTime;
-
+        transform.position = new Vector3(transform.position.x, transform.position.y, -14);
         if(_currentTime >= 1.5f)
         {
             PoolManager.Instance.Push(this);
