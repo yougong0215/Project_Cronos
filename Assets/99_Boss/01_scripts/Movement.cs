@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject player;
+    private Transform player;
 
     private SpriteRenderer _renderer;
 
@@ -21,6 +20,7 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         _renderer = gameObject.GetComponent<SpriteRenderer>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
     private void Update()
     {
@@ -31,20 +31,20 @@ public class Movement : MonoBehaviour
     {
         if (isMoving)
         {
-            if (player.transform.position.x > transform.position.x)
-        {
-            _renderer.flipX = false;
-            movedirection = 1;
-        } else if (player.transform.position.x < transform.position.x)
+            if (player.position.x > transform.position.x)
         {
             _renderer.flipX = true;
+            movedirection = 1;
+        } else if (player.position.x < transform.position.x)
+        {
+            _renderer.flipX = false;
             movedirection = -1;
         }
         }
     }
     private void FindPlayer()
     {
-        if (player.transform.position.x < transform.position.x + findPlayer && player.transform.position.x > transform.position.x - findPlayer)
+        if (player.position.x < transform.position.x + findPlayer && player.position.x > transform.position.x - findPlayer)
         {
             isMoving = false;
         }
@@ -54,7 +54,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void ChasePlayer()
+    public void ChasePlayer()
     {
         if(isMoving == true)
         {
