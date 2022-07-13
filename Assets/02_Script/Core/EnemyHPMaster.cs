@@ -8,13 +8,14 @@ public class EnemyHPMaster : PoolAble
     {
         Defualt = 0,
         Test = 1,
-        Papuyrus = 2
+        Papuyrus = 2,
+            Enemy1 = 3
     }
-
     bool _Liandri = false;
-
+    
     float _currentTime2 = 0;
     bool _Damaged = false;
+    bool _triggerDamaged = false;
     /// <summary>
     /// 0이거나 1이거나
     /// </summary>
@@ -98,7 +99,6 @@ public class EnemyHPMaster : PoolAble
         {
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
             MonsterAIMove();
-            MonsterAIAttack();
             TimeSave();
             _timecode = 0;
             if (_TimeDamaged == true)
@@ -190,7 +190,13 @@ public class EnemyHPMaster : PoolAble
                 _currentTime2 += Time.deltaTime;
                 rb.AddForce(new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 2 * GameManager.Instance.CanMove());
 
-
+                if (_attackTime >= 2f)
+                {
+                    _attackTime = 0;
+                    _purpleBullet = PoolManager.Instance.Pop("BulletTest") as PurpleBullet;
+                    _purpleBullet.Sex(GetComponent<Rigidbody2D>());
+                    _purpleBullet.transform.position = transform.position;
+                }
                 if (rb.velocity.x >= 0.1f)
                 {
                     _ani.SetBool("Run", true);
@@ -209,28 +215,93 @@ public class EnemyHPMaster : PoolAble
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
-        }
-    }
+            case (int)MonsterCode.Enemy1:
 
-    private void MonsterAIAttack()
-    {
-        _attackTime += Time.deltaTime;
-        switch (_monsterType)
-        {
-            case (int)MonsterCode.Test:
-                if (_attackTime >= 2f)
+                if(rb.velocity.x >= 4)
                 {
-                    _attackTime = 0;
-                    _purpleBullet = PoolManager.Instance.Pop("BulletTest") as PurpleBullet;
-                    _purpleBullet.Sex(GetComponent<Rigidbody2D>());
-                    _purpleBullet.transform.position = transform.position;
+                    rb.velocity = new Vector2(4,0);
+                }
+                else if (rb.velocity.x <= -4)
+                {
+                    rb.velocity = new Vector2(-4, 0);
+                }
+                RaycastHit2D _playerS;
+
+                _playerS = Physics2D.Raycast(rb.position, dir, 1f, LayerMask.GetMask("Player"));
+                if (_playerS.collider != null && _Damaged == false)
+                {
+                    _Damaged = true;
+                    rb.velocity = Vector2.zero;
+                    StartCoroutine(Damaged());
+                }
+
+                RaycastHit2D _platform;
+                _platform = Physics2D.Raycast(rb.position, dir + Vector3.down, 1f, LayerMask.GetMask("Platform"));
+                Debug.DrawRay(rb.position, dir + Vector3.down, new Color(255, 0, 0), 1f);
+                if (_platform.collider == null)
+                {
+                    if (dir == new Vector3(1,0,0))
+                    {
+                        dir = new Vector3(-1, 0, 0);
+                        _spi.flipX = true;
+                    }
+                    else if (dir == new Vector3(-1, 0, 0))
+                    {
+                        dir = new Vector3(1, 0, 0);
+                        _spi.flipX = false;
+                    }
+                }
+                if (_platform.collider != null)
+                {
+                    _ani.SetBool("Run", true);
+                    if (_Damaged == false)
+                        rb.AddForce(dir * 2, ForceMode2D.Impulse);
                 }
                 break;
-            case (int)MonsterCode.Papuyrus:
-                break;
         }
     }
+    Vector3 dir = new Vector3(1,0,0);
+
+    IEnumerator Damaged()
+    {
+        _ani.SetBool("Attack", true);
+        _ani.SetBool("Run", false);
+        yield return new WaitForSeconds(0.3f);
+        _triggerDamaged = true;
+        RaycastHit2D _playerS;
+        _playerS = Physics2D.Raycast(rb.position, dir, 1f, LayerMask.GetMask("Player"));
+
+        if (_playerS.collider != null)
+        {
+            if (_playerS.collider.gameObject.GetComponent<PlayerHPMaster>())
+                _playerS.collider.gameObject.GetComponent<PlayerHPMaster>().GetDamage(1);
+        }
+        yield return new WaitForSeconds(0.3f);
+        if (dir == new Vector3(1, 0, 0))
+        {
+            dir = new Vector3(-1, 0, 0);
+            _spi.flipX = true;
+        }
+        else
+        {
+            dir = new Vector3(1, 0, 0);
+            _spi.flipX = false;
+        }
+
+
+        _ani.SetBool("Attack", false);
+        yield return new WaitForSeconds(0.2f);
+
+        _Damaged = false;
+
+
+    }
     float TimeDamager = 0;
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+    }
 
     public void GetDamage(float damage)
     {
