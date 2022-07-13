@@ -76,13 +76,14 @@ public class MeChu : MonoBehaviour
         }
         else
         {
-            AttackNum = 5;
+           AttackNumItem = 5;
         }
         NormalAttack();
         NotAttacking();
     }
     void NormalAttack()
     {
+        TimeRush += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Mouse0) && isCanAttack == false)
         {
             isAttack = true;
@@ -157,6 +158,7 @@ public class MeChu : MonoBehaviour
                 }
                 _box.size = new Vector2(0.32f* 2, 0.64f*2);
                 currentTime = 0;
+                TimeRush = 0;
             }
 
             _AttackNow++;
@@ -214,10 +216,9 @@ public class MeChu : MonoBehaviour
         }
         if (isAttack == true)
         {
-            TimeRush += Time.deltaTime;
             currentTime += Time.deltaTime;
         }
-        if (currentTime >= 0.8f || TimeRush == 3f)
+        if (currentTime >= 0.8f || TimeRush >= 3f)
         {
             TimeRush = 0;
             AttackNum = 0;
@@ -288,7 +289,7 @@ public class MeChu : MonoBehaviour
                     }
                     else
                     {
-                        collision.GetComponent<EnemyHPMaster>().GetDamage(50 * AttackNum);
+                        collision.GetComponent<EnemyHPMaster>().GetDamage(10 * AttackNum);
                     }
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                     StartCoroutine(TurnCam());
@@ -297,7 +298,7 @@ public class MeChu : MonoBehaviour
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 1) * 1.2f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.transform.position = new Vector3(Player.transform.position.x + 2.5f * _player.localScale.x, Player.transform.position.y, 0);
-                collision.GetComponent<EnemyHPMaster>().GetDamage(3 + AttackNum * 3);
+                collision.GetComponent<EnemyHPMaster>().GetDamage(5 + AttackNum * 1);
             }
         }
     }

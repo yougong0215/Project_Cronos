@@ -24,7 +24,9 @@ public class EnemyHPMaster : PoolAble
     PurpleBullet _purpleBullet;
     Word _damageUI;
     [SerializeField] protected List<Vector4> _timeLeaf1;
-    protected List<Sprite> _timeLeaf2;
+    protected Sprite[] _timeLeaf2 = new Sprite[30];
+    SpriteRenderer _spi;
+
     // x = 위치
     // y = 위치
     // z = 체력
@@ -32,7 +34,7 @@ public class EnemyHPMaster : PoolAble
     [SerializeField] Vector2 vector2;
     Rigidbody2D rb;
     float currentTime = 0;
-
+    Animator _ani;
     [SerializeField] int _monsterType = 1;
     int _timecode = 0;
     MonsterCode _monsterCode;
@@ -58,10 +60,14 @@ public class EnemyHPMaster : PoolAble
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _spi = GetComponent<SpriteRenderer>();
+        _ani = GetComponent<Animator>();
         for (int i = 0; i < 30; i++)
         {
             _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, _hp, transform.localEulerAngles.z));
+            _timeLeaf2[i] = _spi.sprite;
         }
+
     }
     private void OnEnable()
     {
@@ -80,8 +86,10 @@ public class EnemyHPMaster : PoolAble
                 if (i <= 0)
                     break;
                 _timeLeaf1[i] = _timeLeaf1[i - 1];
+                _timeLeaf2[i] = _timeLeaf2[i - 1];
             }
             _timeLeaf1[0] = new Vector4(transform.position.x, transform.position.y, _hp, transform.rotation.z);
+            _timeLeaf2[0] = _spi.sprite;
         }
     }
     private void TimeLeaf()
@@ -110,12 +118,14 @@ public class EnemyHPMaster : PoolAble
         if (GameManager.Instance.Timer() == true)
         {
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
+            _ani.StopPlayback();
             _TimeDamaged = true;
             if (currentTime > 0.1f * GameManager.Instance.TimeArrange())
             {
                 currentTime = 0;
                 if (_timecode > 29)
                 {
+                    _ani.StartPlayback();
                     rb.gravityScale = 1;
                     return;
                 }
@@ -124,6 +134,7 @@ public class EnemyHPMaster : PoolAble
                 _hp = (int)_timeLeaf1[_timecode - 1].z;
                 transform.position = _timeLeaf1[_timecode - 1];
                 transform.localEulerAngles = new Vector3(0, 0, _timeLeaf1[_timecode - 1].w);
+                _spi.sprite = _timeLeaf2[_timecode - 1];
                 rb.velocity = Vector3.zero;
                 rb.gravityScale = 0;
             }
@@ -177,7 +188,24 @@ public class EnemyHPMaster : PoolAble
         {
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
-                transform.position -= new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 4 * GameManager.Instance.CanMove() * _canMove * Time.deltaTime;
+                rb.AddForce(new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 2 * GameManager.Instance.CanMove());
+
+
+                if (rb.velocity.x >= 0.1f)
+                {
+                    _ani.SetBool("Run", true);
+                    _spi.flipX = true;
+                }
+                else if (rb.velocity.x < -0.1f)
+                {
+                    _ani.SetBool("Run", true);
+                    _spi.flipX = false;
+                }
+                else
+                {
+                    _ani.SetBool("Run", false);
+                }
+
                 break;
             case (int)MonsterCode.Papuyrus:
                 break;
