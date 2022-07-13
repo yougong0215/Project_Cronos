@@ -11,7 +11,10 @@ public class EnemyHPMaster : PoolAble
         Papuyrus = 2
     }
 
+    bool _Liandri = false;
+
     float _currentTime2 = 0;
+    bool _Damaged = false;
     /// <summary>
     /// 0이거나 1이거나
     /// </summary>
@@ -25,7 +28,7 @@ public class EnemyHPMaster : PoolAble
     // x = 위치
     // y = 위치
     // z = 체력
-    [SerializeField] int _hp;
+    [SerializeField] float _hp;
     [SerializeField] Vector2 vector2;
     Rigidbody2D rb;
     float currentTime = 0;
@@ -90,7 +93,7 @@ public class EnemyHPMaster : PoolAble
             MonsterAIAttack();
             TimeSave();
             _timecode = 0;
-            if(_TimeDamaged == true)
+            if (_TimeDamaged == true)
             {
                 _TimeDamaged = false;
                 _hp -= TimeDamager;
@@ -124,13 +127,26 @@ public class EnemyHPMaster : PoolAble
                 rb.velocity = Vector3.zero;
                 rb.gravityScale = 0;
             }
-            
+
             Debug.Log(_hp);
 
         }
     }
+
+    IEnumerator LiandriTick(float damaged)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(0.2f);
+            GetDamage(damaged);
+        }
+        _Liandri = false;
+    }
+
+
     void Update()
     {
+
         if (_hp < 0)
         {
 
@@ -186,13 +202,20 @@ public class EnemyHPMaster : PoolAble
                 break;
         }
     }
-    int TimeDamager = 0;
+    float TimeDamager = 0;
 
-    public void GetDamage(int damage)
+    public void GetDamage(float damage)
     {
         _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
         _damageUI.transform.position = transform.position;
         _damageUI.ShowText(damage);
+
+        if (ItemManager.Instance.GetLiandri() == true && _Liandri == false)
+        {
+            _Liandri = true;
+            StopCoroutine(LiandriTick(0.5f));
+            StartCoroutine(LiandriTick(0.5f));
+        }
 
         if (GameManager.Instance.Timer() == false)
             _hp -= damage;
@@ -201,4 +224,5 @@ public class EnemyHPMaster : PoolAble
             TimeDamager += damage;
         }
     }
+
 }

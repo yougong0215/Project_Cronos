@@ -9,28 +9,30 @@ using DG.Tweening;
 public class Word : PoolAble
 {
     [SerializeField]TextMesh tmp;
+    float _currentTime = 0;
     // Start is called before the first frame update
 
-    public void ShowText(int Damaged)
+    public void ShowText(float Damaged)
     {
+        _currentTime = 0;
         if (Damaged < 1000 && Damaged >= 500)
         {
             tmp.color = new Color(255, 0, 255);
-            tmp.text = $"{Damaged}.0";
+            tmp.text = $"{Damaged.ToString("F1")}";
             tmp.characterSize = 2f;
             tmp.offsetZ = -9f;
         }
-        else if (Damaged >= 1000)
+        if (Damaged >= 1000)
         {
             tmp.color = new Color(255, 0, 0);
-            tmp.text = $"{Damaged}.0";
+            tmp.text = $"{Damaged.ToString("F1")}";
             tmp.characterSize = 2f;
             tmp.offsetZ = -8f;
         }
-        else
+        if( Damaged < 500)
         {
             tmp.color = new Color(250, 200, 0);
-            tmp.text = $"{Damaged}.0";
+            tmp.text = $"{Damaged.ToString("F1")}";
             tmp.characterSize = 0.8f;
             tmp.offsetZ = -7f;
         }
@@ -43,6 +45,11 @@ public class Word : PoolAble
     // Update is called once per frame
     void Update()
     {
-        
+        _currentTime += Time.deltaTime;
+
+        if(_currentTime >= 1.5f)
+        {
+            PoolManager.Instance.Push(this);
+        }
     }
 }

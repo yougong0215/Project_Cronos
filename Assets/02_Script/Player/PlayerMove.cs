@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField] float maxSpeed;// �ִ�ӵ� ����
-    [SerializeField] float jumpPower; // �����Ŀ� 
+    [SerializeField] float maxSpeed;
+    [SerializeField] float jumpPower;
     Rigidbody2D rigid;
     MeChu _mechu;
 
