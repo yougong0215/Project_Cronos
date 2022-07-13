@@ -40,12 +40,12 @@ public class PlayerMove : MonoBehaviour
             if (rigid.velocity.x >= 0.1f)
             {
                 _DirectValue = 1;
-                transform.localScale = new Vector3(_DirectValue * 0.5f, 1 * 0.5f, 1);
+                transform.localScale = new Vector3(_DirectValue * 0.4f, 1 * 0.4f, 1);
             }
             else if (rigid.velocity.x < -0.1f)
             {
                 _DirectValue = -1;
-                transform.localScale = new Vector3(_DirectValue* 0.5f, 1 * 0.5f, 1);
+                transform.localScale = new Vector3(_DirectValue* 0.4f, 1 * 0.4f, 1);
             }
         }
     }
@@ -99,7 +99,7 @@ public class PlayerMove : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 20 && Mathf.Abs(rigid.velocity.y) < 0.1f)
+        if (collision.gameObject.layer == 20 && (Mathf.Abs(rigid.velocity.y) < 0.1f || Mathf.Abs(rigid.velocity.y) == 0))
         {
             _jumpCount = 0;
         }

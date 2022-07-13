@@ -76,12 +76,12 @@ public class PurpleBullet : PoolAble
         _masterEnemy = _ms;
         if(_ms.velocity.x >= 0)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
             dir = new Vector3(1, 0);
         }
         if (_ms.velocity.x < -0f)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
             dir = new Vector3(-1, 0);
         }
     }
