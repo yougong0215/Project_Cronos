@@ -9,7 +9,7 @@ public class PlayerMove : MonoBehaviour
     Rigidbody2D rigid;
     MeChu _mechu;
     EdgeCollider2D _edge;
-
+    PlayerHPMaster _hp;
     int _jumpCount = 0;
     int _maxJump = 1;
     int _DirectValue = 1;
@@ -20,22 +20,31 @@ public class PlayerMove : MonoBehaviour
         _mechu = GameObject.Find("MeChuLeft").GetComponent<MeChu>();
         rigid = GetComponent<Rigidbody2D>();
         _edge = GetComponent<EdgeCollider2D>();
+        _hp = GetComponent<PlayerHPMaster>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
         {
-            //GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+            try
+            {
+
+                GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+            }
+            catch
+            {
+
+            }
         }
 
-        if (Input.GetButtonDown("Jump") && _jumpCount < _maxJump)
+        if (Input.GetButtonDown("Jump") && _jumpCount < _maxJump && _hp.GetDamaged() == false)
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             _jumpCount++;
 
         }
-        if (Input.GetButtonUp("Horizontal"))
+        if (Input.GetButtonUp("Horizontal") && _hp.GetDamaged() == false)
         {
             rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
 
@@ -43,12 +52,12 @@ public class PlayerMove : MonoBehaviour
 
         if (_mechu.GetBool() == false)
         {
-            if (rigid.velocity.x >= 0.1f)
+            if (rigid.velocity.x >= 0.1f && _hp.GetDamaged() == false)
             {
                 _DirectValue = 1;
                 transform.localScale = new Vector3(_DirectValue * 0.4f, 1 * 0.4f, 1);
             }
-            else if (rigid.velocity.x < -0.1f)
+            else if (rigid.velocity.x < -0.1f && _hp.GetDamaged() == false)
             {
                 _DirectValue = -1;
                 transform.localScale = new Vector3(_DirectValue * 0.4f, 1 * 0.4f, 1);
@@ -68,9 +77,15 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-        if (h != 0)
+        float h = 0;
+        if (_hp.GetDamaged() == false)
+        {
+            h = Input.GetAxisRaw("Horizontal");
+
+            rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+        }
+
+        if (h != 0 )
         {
             Move = true;
         }

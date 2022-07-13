@@ -266,7 +266,7 @@ public class EnemyHPMaster : PoolAble
     {
         _ani.SetBool("Attack", true);
         _ani.SetBool("Run", false);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.4f);
         _triggerDamaged = true;
         RaycastHit2D _playerS;
         _playerS = Physics2D.Raycast(rb.position, dir, 1f, LayerMask.GetMask("Player"));
@@ -274,9 +274,14 @@ public class EnemyHPMaster : PoolAble
         if (_playerS.collider != null)
         {
             if (_playerS.collider.gameObject.GetComponent<PlayerHPMaster>())
+            {
                 _playerS.collider.gameObject.GetComponent<PlayerHPMaster>().GetDamage(1);
+                _playerS.collider.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector3(dir.x, 0, 0) + new Vector3(0, 1, 0), ForceMode2D.Impulse);
+
+            }
+
         }
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.4f);
         if (dir == new Vector3(1, 0, 0))
         {
             dir = new Vector3(-1, 0, 0);

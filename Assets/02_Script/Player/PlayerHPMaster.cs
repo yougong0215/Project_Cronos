@@ -8,20 +8,30 @@ public class PlayerHPMaster : MonoBehaviour
     [SerializeField] int _MaxHP = 10;
     float currentTime = 0;
     bool _hpRefill =false;
+    bool _damaged =false;
 
     public void GetDamage(int value)
     {
         // 대충 에니메이션 trigger
-        if (currentTime >= 1f)
+        if (_damaged ==false)
         {
+            _damaged = true;
             currentTime = 0;
             _hp -= value;
         }
+    }
+    public bool GetDamaged()
+    {
+        return _damaged;
     }
 
 
     void Update()
     {
+        if(currentTime >= 0.5f)
+        {
+            _damaged = false;
+        }
         currentTime += Time.deltaTime;
         if(_hp <= 0)
         {
