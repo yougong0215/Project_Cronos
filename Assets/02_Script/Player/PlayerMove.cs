@@ -26,7 +26,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
         {
-            GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+            //GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
         }
 
         if (Input.GetButtonDown("Jump") && _jumpCount < _maxJump)
