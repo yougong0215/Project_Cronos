@@ -88,7 +88,7 @@ public class EnemyHPMaster : PoolAble
     {
         if (GameManager.Instance.Timer() == false)
         {
-            rb.gravityScale = 1;
+            rb.gravityScale = 1 * GameManager.Instance.CanMove();
             MonsterAIMove();
             MonsterAIAttack();
             TimeSave();
@@ -109,7 +109,7 @@ public class EnemyHPMaster : PoolAble
         }
         if (GameManager.Instance.Timer() == true)
         {
-            rb.gravityScale = 1;
+            rb.gravityScale = 1 * GameManager.Instance.CanMove();
             _TimeDamaged = true;
             if (currentTime > 0.1f * GameManager.Instance.TimeArrange())
             {

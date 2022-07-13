@@ -211,7 +211,7 @@ public class MeChu : MonoBehaviour
             {
                 if(isDownAttack==false)
                 {
-                    collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(10, 0) * 0.3f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
+                    collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 2f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                     collision.GetComponent<EnemyHPMaster>().GetDamage(30);
                     StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 }
@@ -228,7 +228,7 @@ public class MeChu : MonoBehaviour
             if (isDownAttackUpper == true)
             {
                 if(GameManager.Instance.TimeArrange() != 10)
-                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(10, 0) * 3f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
+                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(30);
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
             }

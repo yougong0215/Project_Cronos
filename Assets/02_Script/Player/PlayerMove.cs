@@ -8,6 +8,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float jumpPower;
     Rigidbody2D rigid;
     MeChu _mechu;
+    EdgeCollider2D _edge;
 
     int _jumpCount = 0;
     int _maxJump =1;
@@ -18,6 +19,7 @@ public class PlayerMove : MonoBehaviour
     {
         _mechu = GameObject.Find("MeChuLeft").GetComponent<MeChu>();
         rigid = GetComponent<Rigidbody2D>();
+        _edge = GetComponent<EdgeCollider2D>();
     }
 
     void Update()
@@ -38,12 +40,12 @@ public class PlayerMove : MonoBehaviour
             if (rigid.velocity.x >= 0.1f)
             {
                 _DirectValue = 1;
-                transform.localScale = new Vector3(_DirectValue, 1, 1);
+                transform.localScale = new Vector3(_DirectValue * 0.5f, 1 * 0.5f, 1);
             }
             else if (rigid.velocity.x < -0.1f)
             {
                 _DirectValue = -1;
-                transform.localScale = new Vector3(_DirectValue, 1, 1);
+                transform.localScale = new Vector3(_DirectValue* 0.5f, 1 * 0.5f, 1);
             }
         }
     }
@@ -95,12 +97,12 @@ public class PlayerMove : MonoBehaviour
         }
         Debug.DrawRay(transform.position, new Vector3(transform.position.x, transform.position.y - 1,transform.position.z));
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.layer == 20 )
+        if (collision.gameObject.layer == 20 && Mathf.Abs(rigid.velocity.y) < 0.1f)
         {
             _jumpCount = 0;
         }
     }
+
 }

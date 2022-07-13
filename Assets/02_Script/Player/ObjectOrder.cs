@@ -45,7 +45,14 @@ public class ObjectOrder : PoolAble
         {
             if (_enemy == null)
             {
-                _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Transform>();
+                try
+                {
+                    _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Transform>();
+                }
+                catch
+                {
+                    _enemy = Player;
+                }
             }
 
             return _enemy;
