@@ -8,15 +8,18 @@ public class EnemyHPMaster : PoolAble
     {
         Defualt = 0,
         Test = 1,
-        Papuyrus = 2
+        Papuyrus = 2,
+        knight = 3
     }
+
+    public LayerMask groundLayer;
 
     bool _Liandri = false;
 
     float _currentTime2 = 0;
     bool _Damaged = false;
     /// <summary>
-    /// 0ÀÌ°Å³ª 1ÀÌ°Å³ª
+    /// 0ï¿½Ì°Å³ï¿½ 1ï¿½Ì°Å³ï¿½
     /// </summary>
     float _canMove = 1;
     float _MoveTimeArrange = 1;
@@ -27,9 +30,9 @@ public class EnemyHPMaster : PoolAble
     protected Sprite[] _timeLeaf2 = new Sprite[30];
     SpriteRenderer _spi;
 
-    // x = À§Ä¡
-    // y = À§Ä¡
-    // z = Ã¼·Â
+    // x = ï¿½ï¿½Ä¡
+    // y = ï¿½ï¿½Ä¡
+    // z = Ã¼ï¿½ï¿½
     [SerializeField] float _hp;
     [SerializeField] Vector2 vector2;
     Rigidbody2D rb;
@@ -165,7 +168,7 @@ public class EnemyHPMaster : PoolAble
             rb.gravityScale = 0;
             if (_timeLeaf1[0] == _timeLeaf1[29])
             {
-                Debug.Log("¿©¼­ Çª½¬");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½ Çªï¿½ï¿½");
             }
         }
         TimeLeaf();
@@ -184,10 +187,14 @@ public class EnemyHPMaster : PoolAble
 
     private void MonsterAIMove()
     {
+
         switch (_monsterType)
         {
+            case (int)MonsterCode.Defualt:
+                break;
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
+                
                 rb.AddForce(new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 2 * GameManager.Instance.CanMove());
 
 
@@ -206,8 +213,12 @@ public class EnemyHPMaster : PoolAble
                     _ani.SetBool("Run", false);
                 }
 
+                 
                 break;
             case (int)MonsterCode.Papuyrus:
+
+                break;
+            case (int)MonsterCode.knight:
                 break;
         }
     }
@@ -227,6 +238,7 @@ public class EnemyHPMaster : PoolAble
                 }
                 break;
             case (int)MonsterCode.Papuyrus:
+
                 break;
         }
     }
