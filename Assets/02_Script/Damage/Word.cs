@@ -36,7 +36,7 @@ public class Word : PoolAble
             tmp.characterSize = 0.8f;
             tmp.offsetZ = -7f;
         }
-        transform.DOMove(new Vector3(transform.position.x + Random.Range(-0.5f, 0.5f), transform.position.y + Random.Range(0f, 1.5f), 0), 0.3f)
+        transform.DOMove(new Vector3(transform.position.x + Random.Range(-0.5f, 0.5f), transform.position.y + Random.Range(0f, 1.5f), -8), 0.3f)
             .OnComplete(() => {
             transform.DOMoveY(transform.position.y - 0.3f, 1f).OnComplete(() => { PoolManager.Instance.Push(this); });
         });
@@ -46,7 +46,6 @@ public class Word : PoolAble
     void Update()
     {
         _currentTime += Time.deltaTime;
-        transform.position = new Vector3(transform.position.x, transform.position.y, -14);
         if(_currentTime >= 1.5f)
         {
             PoolManager.Instance.Push(this);
