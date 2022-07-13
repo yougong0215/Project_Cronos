@@ -86,6 +86,8 @@ public class EnemyHPMaster : PoolAble
             {
                 if (i <= 0)
                     break;
+
+                
                 _timeLeaf1[i] = _timeLeaf1[i - 1];
                 _timeLeaf2[i] = _timeLeaf2[i - 1];
             }
@@ -95,6 +97,13 @@ public class EnemyHPMaster : PoolAble
     }
     private void TimeLeaf()
     {
+        _ani.speed = GameManager.Instance.CanMove();
+        if (GameManager.Instance.Timer() == false && _timecode >= 29)
+        {
+            _ani.enabled = true;
+            _ani.Rebind();
+            _timecode = 0;
+        }
         if (GameManager.Instance.Timer() == false && GameManager.Instance.TimeArrange() != 10)
         {
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
@@ -119,13 +128,15 @@ public class EnemyHPMaster : PoolAble
         {
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
             _ani.StopPlayback();
+            _ani.enabled = false;
             _TimeDamaged = true;
             if (currentTime > 0.1f * GameManager.Instance.TimeArrange())
             {
                 currentTime = 0;
-                if (_timecode > 29)
+                if (_timecode >= 29)
                 {
-                    _ani.StartPlayback();
+                    _ani.enabled = true;
+                    _ani.Rebind();
                     rb.gravityScale = 1;
                     return;
                 }
