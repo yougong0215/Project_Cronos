@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class PatternType : MonoBehaviour
 {
-    private Renderer color;
-    private enum _PatternType
-    {
-        Gallop,
-        Attack,
-        SpawnEnemy
-    }
+    
     private void Start()
     {
-             color = GetComponent<Renderer>();
+
     }
-    private void Update()
+    private void Awake()
     {
-         
+        Pattern();
+    }
+    private IEnumerator Pattern()
+    {
+        yield return null;
+    }
+    private IEnumerator CloseAttack()
+    {
+        yield return null;
+    }
+    private IEnumerator Cast()
+    {
+        yield return null;
+    }
+    private IEnumerator Telleport()
+    {
+        yield return null;
     }
 }
