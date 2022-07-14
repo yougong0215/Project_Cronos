@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
+using UnityEngine.UI;
 
 public class MeChu : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class MeChu : MonoBehaviour
     Vector3 OriginPos;
     Vector3 OriginRot;
     float currentTime = 0;
-    [SerializeField] CinemachineVirtualCamera _cam;
+    //[SerializeField] CinemachineVirtualCamera _cam;
     float speed = 0;
     float Force;
 
@@ -34,7 +35,8 @@ public class MeChu : MonoBehaviour
         Third = 3
     }
     int AttackNum = 0;
-    int AttackNumItem = 5;
+    int AttackNumItem = 39;
+    [SerializeField]Image ItemFill;
     int _AttackNow = 0;
     bool _attackNummm = false;
     bool _upAttack = false;
@@ -71,14 +73,6 @@ public class MeChu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ItemManager.Instance.GetPunching() == true)
-        {
-            AttackNumItem = 50;
-        }
-        else
-        {
-           AttackNumItem = 5;
-        }
         NormalAttack();
         NotAttacking();
     }
@@ -273,7 +267,7 @@ public class MeChu : MonoBehaviour
         {
             currentTime += Time.deltaTime;
         }
-        if ((currentTime >= 0.8f || TimeRush >= 3f) && _isGuard== false)
+        if ((currentTime >= 0.8f || TimeRush >= 5f) && _isGuard== false)
         {
             TimeRush = 0;
             AttackNum = 0;
@@ -348,7 +342,7 @@ public class MeChu : MonoBehaviour
                 }
                 if(AttackNum == AttackNumItem)
                 {
-                    if (AttackNumItem == 50)
+                    if (AttackNumItem == 40 && AttackNum == 40)
                     {
                         collision.GetComponent<EnemyHPMaster>().GetDamage(50000);
                     }
@@ -357,6 +351,8 @@ public class MeChu : MonoBehaviour
                         collision.GetComponent<EnemyHPMaster>().GetDamage(10 * AttackNum);
                     }
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
+                    AttackNumItem++;
+                    ItemFill.fillAmount += 1f;// 0.025f;
                     StartCoroutine(TurnCam());
                 }
                 StopCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));

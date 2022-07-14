@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerMove : MonoBehaviour
     int _maxJump = 1;
     int _DirectValue = 1;
     bool Move = false;
+    float _coljumpCount = 0;
+    [SerializeField] Image _iamge;
 
     void Awake()
     {
@@ -29,6 +32,7 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        _iamge.fillAmount = _coljumpCount;
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
         {
             DownPlatformT();
@@ -39,12 +43,29 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             _jumpCount++;
-
+            _coljumpCount+= 0.01f;
         }
         if (Input.GetButtonUp("Horizontal") && _hp.GetDamaged() == false)
         {
             rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
 
+        }
+        if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)))
+        {
+            rigid.gravityScale = 1;
+        }
+        if(_coljumpCount >= 100 && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)) && rigid.velocity.y <-0.1f)
+        {
+            
+            rigid.gravityScale = 0.05f;
+        }
+        if((Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space)))
+        {
+            rigid.gravityScale = 1;
+        }
+        if(Input.GetKeyDown(KeyCode.Mouse0) && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)))
+        {
+            rigid.gravityScale = 2;
         }
 
         if (_mechu.GetBool() == false)
