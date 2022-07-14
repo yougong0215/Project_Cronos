@@ -362,6 +362,7 @@ public class MeChu : MonoBehaviour
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                     AttackNumItem++;
                     ItemFill.fillAmount +=  0.025f;
+                    ItemFill.rectTransform.anchoredPosition = new Vector3(ItemFill.rectTransform.position.x, 480, 0);
                     StartCoroutine(TurnCam());
                 }
                 StartCoroutine(TurnCam());

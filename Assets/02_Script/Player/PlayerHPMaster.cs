@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHPMaster : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerHPMaster : MonoBehaviour
     bool _hpRefill =false;
     bool _damaged =false;
     bool guardTime = true;
+    [SerializeField] Image _HPUI;
     public void GetDamage(float value)
     {
         // 대충 에니메이션 trigger
@@ -40,6 +42,7 @@ public class PlayerHPMaster : MonoBehaviour
 
     void Update()
     {
+        _HPUI.fillAmount = (_hp / 10);
 
         if(Input.GetKey(KeyCode.LeftShift))
         {

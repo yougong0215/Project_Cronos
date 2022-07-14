@@ -18,21 +18,21 @@ public class Word : PoolAble
         if (Damaged < 100 && Damaged >= 50)
         {
             tmp.color = new Color(255, 0, 255);
-            tmp.text = $"{Damaged.ToString("F1")}";
+            tmp.text = $"{Damaged.ToString("F2")}";
             tmp.characterSize = 2f;
             tmp.offsetZ = -9f;
         }
         if (Damaged >= 100)
         {
             tmp.color = new Color(255, 0, 0);
-            tmp.text = $"{Damaged.ToString("F1")}";
+            tmp.text = $"{Damaged.ToString("F2")}";
             tmp.characterSize = 2f;
             tmp.offsetZ = -8f;
         }
         if( Damaged < 50)
         {
             tmp.color = new Color(250, 200, 0);
-            tmp.text = $"{Damaged.ToString("F1")}";
+            tmp.text = $"{Damaged.ToString("F2")}";
             tmp.characterSize = 0.8f;
             tmp.offsetZ = -7f;
         }

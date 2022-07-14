@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;   
+using UnityEngine.UI;
 
 public class ObjectOrder : PoolAble
 {
@@ -11,7 +11,7 @@ public class ObjectOrder : PoolAble
     float _currnetTime;
     Vector3 dir;
     float speed = 20;
-    [SerializeField]Image UI;
+    [SerializeField] Image UI;
     Word _damageUI;
     bool isOrder = false;
     bool isAwaken = false;
@@ -46,7 +46,7 @@ public class ObjectOrder : PoolAble
     bool GetEnemy = false;
     private void OnEnable()
     {
-        
+
         speed = 10;
         transform.localEulerAngles = new Vector3(0, 0, 0);
         dir = Vector2.up;
@@ -65,12 +65,18 @@ public class ObjectOrder : PoolAble
     {
         if (GetEnemy == false)
         {
-            if (isAwaken == true)
+            if (isAwaken == true && isOrder == true)
             {
+                
                 transform.localPosition += transform.up * 0.4f * Time.deltaTime;
             }
+
             if (isAwaken == false)
                 Awaken();
+        }
+        else
+        {
+            transform.localPosition = new Vector3(0, 0, 0);
         }
         //transform.position = new Vector3(Mathf.Clamp(Player.position.x, -5, 5), Mathf.Clamp(Player.position.y, -5, 5));
     }
@@ -81,7 +87,7 @@ public class ObjectOrder : PoolAble
     }
     void Awaken()
     {
-       
+
         transform.localPosition += transform.up * speed * Time.deltaTime;
         if (isOrder == false)
         {
@@ -96,7 +102,7 @@ public class ObjectOrder : PoolAble
             _orderTime += Time.deltaTime;
             if (Mathf.Abs(point.x - transform.position.x) < _orderTime && Mathf.Abs(point.y - transform.position.y) < _orderTime)
             {
-                if(isiPlayer == false)
+                if (isiPlayer == false)
                     _currnetTime = 0;
 
                 transform.DOKill();
@@ -114,15 +120,14 @@ public class ObjectOrder : PoolAble
         if (collision.GetComponent<EnemyHPMaster>())
         {
             _orderTime = 0;
-            _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
-            _damageUI.transform.position = transform.position;
-            _damageUI.ShowText(1);
             _currnetTime = 0;
             isOrder = false;
-            collision.GetComponent<EnemyHPMaster>().GetDamage(1);
+            collision.GetComponent<EnemyHPMaster>().GetDamage(0.5f);
             speed = 0;
             isAwaken = true;
             transform.SetParent(collision.transform);
+            GetEnemy = true;
+            
             //transform.localPosition = transform.up * 0.3f;
         }
     }
@@ -130,22 +135,36 @@ public class ObjectOrder : PoolAble
     {
         if (collision.GetComponent<EnemyHPMaster>())
         {
-            if(Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                UI.fillAmount += 0.05f;
+                UI.fillAmount += 0.01f;
+
+                UI.rectTransform.anchoredPosition = new Vector3(UI.rectTransform.position.x, 480, 0);
                 collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-                _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
-                _damageUI.transform.position = transform.position;
-                _damageUI.ShowText(3);
                 isPush = true;
                 transform.localPosition = transform.up * -1.3f;
-                StartCoroutine(Push());
+                try
+                {
+                    StartCoroutine(Push());
+                }
+                catch
+                {
+                    PoolManager.Instance.Push(this);
+                }
                 collision.GetComponent<EnemyHPMaster>().GetDamage(3);
             }
             if (isPush == false)
             {
                 transform.position = collision.transform.position;
             }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<EnemyHPMaster>())
+        {
+            PoolManager.Instance.Push(this);
         }
     }
 
