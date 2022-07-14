@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossHP : MonoBehaviour
 {
-    private float bossHP = 20;
+    private float bossHP = 1;
 
     public float GetbossHP()
     {
@@ -13,6 +13,15 @@ public class BossHP : MonoBehaviour
 
     public void SetbossHP(float bossHP)
     {
-        this.bossHP = bossHP;
+        this.bossHP -= bossHP;
+    }
+
+    private void Update()
+    {
+        Debug.Log(bossHP);
+        if(bossHP <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

@@ -13,28 +13,114 @@ public class PatternType : MonoBehaviour
     private GameObject bulletPrefabs;
     
     private int num = 0;
-
+    float currentTime = 0;
     //private bool isOnAttack = false;
+
+    [SerializeField] protected List<Vector4> _timeLeaf1;
+    protected Sprite[] _timeLeaf2 = new Sprite[30];
+    int _timecode = 0;
 
     [SerializeField]
     private float groundPositionY; //지면과 Boss의 Collider가 맞닿는 지점
 
-
+    Word _damageUI;
     //보스 궁극기 사용시 이동할 지점
     [SerializeField]
     private float middleOfMapX; //보스맵의 중앙 X
     [SerializeField]
     private float middleOfMapY; //맵의 위쪽
+    SpriteRenderer _spi;
 
     private void Awake()
     {
+        
+        _spi = GetComponent<SpriteRenderer>();
+        for (int i = 0; i < 30; i++)
+        {
+            _timeLeaf1.Add(new Vector4(transform.position.x, transform.position.y, 0, transform.localEulerAngles.z));
+            _timeLeaf2[i] = _spi.sprite;
+        }
         movement = GetComponent<Movement>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         transform.localPosition = new Vector3(3.23f, 1.28f, player.position.z);
         animator = GetComponent<Animator>();
         distance = Vector3.Distance(player.position, transform.position);
-
+        
     }
+
+    private void TimeSave()
+    {
+        if (currentTime >= 0.1f * GameManager.Instance.TimeArrange())
+        {
+            currentTime = 0;
+            for (int i = 29; i > 0; i--)
+            {
+                if (i <= 0)
+                    break;
+
+
+                _timeLeaf1[i] = _timeLeaf1[i - 1];
+                _timeLeaf2[i] = _timeLeaf2[i - 1];
+            }
+            _timeLeaf1[0] = new Vector4(transform.position.x, transform.position.y, 0, transform.rotation.z);
+            _timeLeaf2[0] = _spi.sprite;
+        }
+    }
+    private void TimeLeaf()
+    {
+
+        animator.speed = GameManager.Instance.CanMove();
+        if (GameManager.Instance.Timer() == false && _timecode >= 29)
+        {
+            animator.enabled = true;
+            animator.Rebind();
+            _timecode = 0;
+            StartCoroutine(Pattern());
+        }
+        if (GameManager.Instance.Timer() == false && GameManager.Instance.TimeArrange() != 10)
+        {
+            TimeSave();
+            _timecode = 0;
+            
+        }
+
+        if (GameManager.Instance.Timer() == true && _timecode <= 29)
+        {
+            StopAllCoroutines();
+            animator.StopPlayback();
+            animator.enabled = false;
+            if (currentTime > 0.1f * GameManager.Instance.TimeArrange())
+            {
+                currentTime = 0;
+                if (_timecode >= 29)
+                {
+
+                    animator.enabled = true;
+                    animator.Rebind();
+                    animator.SetBool("Died", false);
+                    return;
+                }
+
+                _timecode++;
+                transform.position = _timeLeaf1[_timecode - 1];
+                transform.localEulerAngles = new Vector3(0, 0, _timeLeaf1[_timecode - 1].w);
+                _spi.sprite = _timeLeaf2[_timecode - 1];
+            }
+
+        }
+    }
+
+
+
+
+
+
+    private void Update()
+    {
+        currentTime += Time.deltaTime;
+        TimeLeaf();
+    }
+
 
     private void Start()
     {
@@ -99,8 +185,7 @@ public class PatternType : MonoBehaviour
 
             Vector2 pos = new Vector2(Mathf.Cos(value), Mathf.Sin(value)) * 8;
             pos += Vector2.down * 3;
-
-            Instantiate(bulletPrefabs, new Vector2(-pos.x, pos.y), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(-pos.x, pos.y);
             yield return new WaitForSeconds(0.0625f);
         }
         animator.SetTrigger("V");
@@ -125,8 +210,7 @@ public class PatternType : MonoBehaviour
 
             Vector2 pos = new Vector2(Mathf.Cos(value), Mathf.Sin(value)) * 8;
             pos += Vector2.down * 3;
-
-            Instantiate(bulletPrefabs, new Vector2(pos.x, pos.y), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(pos.x, pos.y);
             yield return new WaitForSeconds(0.0625f);
         }
         animator.SetTrigger("V");
@@ -151,7 +235,7 @@ public class PatternType : MonoBehaviour
             Vector2 pos = new Vector2(Mathf.Cos(value), Mathf.Sin(value)) * 8;
             pos += Vector2.down * 3;
 
-            Instantiate(bulletPrefabs, new Vector2(-pos.x, pos.y), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(-pos.x, pos.y);
         }
         animator.SetTrigger("V");
         yield return new WaitForSeconds(0.5f);
@@ -170,7 +254,7 @@ public class PatternType : MonoBehaviour
 
         for (int i = -8; i < 9; i++)
         {
-            Instantiate(bulletPrefabs, new Vector3(i, 0.8f, player.position.z), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(i, 0.8f);
             yield return new WaitForSeconds(0.0625f);
         }
         animator.SetTrigger("V");
@@ -190,7 +274,7 @@ public class PatternType : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = 9; i > -8; i--)
         {
-            Instantiate(bulletPrefabs, new Vector3(i, 0.8f, player.position.z), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(i, 0.8f);
             yield return new WaitForSeconds(0.0625f);
         }
         animator.SetTrigger("V");
@@ -209,7 +293,7 @@ public class PatternType : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for (int i = -9; i < 8; i++)
         {
-            Instantiate(bulletPrefabs, new Vector3(i, 0.8f, player.position.z), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(i, 0.8f);
         }
         animator.SetTrigger("V");
         yield return new WaitForSeconds(0.5f);
@@ -227,9 +311,9 @@ public class PatternType : MonoBehaviour
         yield return new WaitForSeconds(1f);
         for(int i = -3; i < 4; i++)
         {
-            Instantiate(bulletPrefabs, new Vector3(-7, i, player.position.z), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(-7, i);
             yield return new WaitForSeconds(0.25f);
-            Instantiate(bulletPrefabs, new Vector3(7, i, player.position.z), Quaternion.identity);
+            PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(7, i);
             yield return new WaitForSeconds(0.25f);
         }
         yield return new WaitForSeconds(0.5f);
@@ -282,8 +366,8 @@ public class PatternType : MonoBehaviour
 
     private IEnumerator CastBulletAtSide()
     {
-        Instantiate(bulletPrefabs, new Vector3(transform.localPosition.x - 2, transform.localPosition.y, player.position.z), Quaternion.identity);
-        Instantiate(bulletPrefabs, new Vector3(transform.localPosition.x - 6, transform.localPosition.y, player.position.z), Quaternion.identity);
+        PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(transform.localPosition.x - 2, transform.localPosition.y);
+        PoolManager.Instance.Pop("BossBullet1").transform.position = new Vector2(transform.localPosition.x - 6, transform.localPosition.y);
         yield return null;
     }
 }

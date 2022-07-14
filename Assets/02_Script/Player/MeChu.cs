@@ -309,13 +309,51 @@ public class MeChu : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log("몬가있음");
-        if (collision.GetComponent<EnemyHPMaster>() )
+        //
+        if (collision.GetComponent<BossHP>())
+        {
+            if ((_AttackNow == 1 || _AttackNow == 2))
+            {
+                if (isDownAttack == false && isDownAttackUpper == false)
+                {
+                    collision.GetComponent<BossHP>().SetbossHP(10);
+                }
+            }
+            if (_upAttack == true && isDownAttackUpper == false)
+            {
+                collision.GetComponent<BossHP>().SetbossHP(10);
+            }
+            if (isDownAttack == true && isDownAttackUpper == false)
+            {
+
+                collision.GetComponent<BossHP>().SetbossHP(10);
+            }
+            if (isDownAttackUpper == true)
+            {
+
+                if (AttackNum == AttackNumItem)
+                {
+                    if (AttackNumItem == 40 && AttackNum == 40)
+                    {
+                        collision.GetComponent<BossHP>().SetbossHP(50000);
+                    }
+                    else
+                    {
+                        collision.GetComponent<BossHP>().SetbossHP(10 * AttackNum);
+                    }
+                    AttackNumItem++;
+                    ItemFill.fillAmount += 0.025f;
+                    ItemFill.rectTransform.anchoredPosition = new Vector3(ItemFill.rectTransform.position.x, 480, 0);
+                }
+            }
+        }
+        if (collision.GetComponent<EnemyHPMaster>())
         {
             if ((_AttackNow == 1 || _AttackNow == 2))
             {
                 if(isDownAttack==false && isDownAttackUpper == false)
                 {
+                    
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 2f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                     collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                     StartCoroutine(TurnCam());
