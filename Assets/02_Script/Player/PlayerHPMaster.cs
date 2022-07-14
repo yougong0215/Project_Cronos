@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHPMaster : MonoBehaviour
 {
-    [SerializeField] float _hp = 3;
+    [SerializeField] float _hp = 10;
     [SerializeField] float _MaxHP = 10;
     float currentTime = 0;
     bool _hpRefill =false;
     bool _damaged =false;
     bool guardTime = true;
+    [SerializeField] Image _HPUI;
     public void GetDamage(float value)
     {
         // 대충 에니메이션 trigger
@@ -40,6 +42,7 @@ public class PlayerHPMaster : MonoBehaviour
 
     void Update()
     {
+        _HPUI.fillAmount = (_hp / 10);
 
         if(Input.GetKey(KeyCode.LeftShift))
         {
@@ -59,14 +62,14 @@ public class PlayerHPMaster : MonoBehaviour
         {
             Debug.Log("쥬금");
         }
-        if((GameManager.Instance.Timer() == true || GameManager.Instance.TimeArrange() == 10) && _hpRefill == false)
+        if(GameManager.Instance.Timer() == true && _hpRefill == false)
         {
             _hp += 2;
             _hpRefill = true;
         }
-        else
+        if (GameManager.Instance.Timer() == false )
         {
-            _hpRefill = true;
+            _hpRefill = false;
         }
 
         if (_hp >= _MaxHP)

@@ -44,6 +44,7 @@ public class PlayerMove : MonoBehaviour
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             _jumpCount++;
             _coljumpCount+= 0.01f;
+            _iamge.rectTransform.anchoredPosition = new Vector3(_iamge.rectTransform.position.x, 480, 0);
         }
         if (Input.GetButtonUp("Horizontal") && _hp.GetDamaged() == false)
         {

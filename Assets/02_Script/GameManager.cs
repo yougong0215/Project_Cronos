@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] Animator image;
+    [SerializeField] Image _MPUI;
     float currentTime = 0;
     float TimeLeafCool = 0;
     int _timecode;
     Transform DamagedUI;
-    [SerializeField] TextMeshProUGUI Cooldown;
     bool _bTimereaf = false;
     float _canMove = 1;
     float _MoveTimeArrange = 1;
@@ -26,14 +28,15 @@ public class GameManager : Singleton<GameManager>
     {
         if (_TimeStop == false)
         {
-            if (Input.GetKeyDown(KeyCode.Q) && TimeLeafCool <= 0)
+            if (Input.GetKeyDown(KeyCode.Q) && _MPUI.fillAmount == 1)
             {
 
                 if (_bTimereaf == false)
                 {
-                    TimeLeafCool = 10;
+                    _MPUI.fillAmount = 0;
                     _TimeStop = false;
                     _bTimereaf = true;
+                    image.SetBool("Leaf", true);
                 }
             }
             currentTime += Time.deltaTime;
@@ -45,6 +48,7 @@ public class GameManager : Singleton<GameManager>
                     currentTime = 0;
                     if (_timecode >= 29)
                     {
+                        image.SetBool("Leaf", false);
                         _bTimereaf = false;
                         _timecode = 0;
                         return;
@@ -55,10 +59,6 @@ public class GameManager : Singleton<GameManager>
             }
         }
 
-        if (TimeLeafCool <= 0)
-        {
-            TimeLeafCool = 0;
-        }
         if (_bTimereaf == false)
         {
 
@@ -91,9 +91,8 @@ public class GameManager : Singleton<GameManager>
             }
             
         }
-        Cooldown.text = $"CoolDown : {TimeLeafCool} ";
         if (_bTimereaf == false || _TimeStop == false)
-            TimeLeafCool -= Time.deltaTime;
+            _MPUI.fillAmount += (Time.deltaTime/10);
     }
 
     public float CanMove()
