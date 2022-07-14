@@ -28,6 +28,10 @@ public class PlayerHPMaster : MonoBehaviour
 
         }
     }
+    private void Start()
+    {
+        guardTime = false;
+    }
     public bool GetDamaged()
     {
         return _damaged;

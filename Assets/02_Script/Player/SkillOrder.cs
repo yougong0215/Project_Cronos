@@ -16,7 +16,7 @@ public class SkillOrder : MonoBehaviour
     void Update()
     {
         currentTime += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.Mouse1) && currentTime>= 3f)
         {
             order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
             order.transform.position = transform.position;

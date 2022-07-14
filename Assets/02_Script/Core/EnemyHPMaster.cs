@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 public class EnemyHPMaster : PoolAble
 {
     enum MonsterCode
@@ -25,7 +25,7 @@ public class EnemyHPMaster : PoolAble
     /// </summary>
     float _canMove = 1;
     float _MoveTimeArrange = 1;
-
+    
     PurpleBullet _purpleBullet;
     Word _damageUI;
     [SerializeField] protected List<Vector4> _timeLeaf1;
@@ -44,7 +44,7 @@ public class EnemyHPMaster : PoolAble
     [SerializeField] int _monsterType = 1;
     int _timecode = 0;
     MonsterCode _monsterCode;
-
+    Image _UI;
     float _attackTime = 0;
 
     bool _TimeDamaged;
@@ -65,7 +65,7 @@ public class EnemyHPMaster : PoolAble
 
     private void Awake()
     {
-
+        _UI = GameObject.FindGameObjectWithTag("Lin").GetComponent<Image>();
         rb = GetComponent<Rigidbody2D>();
         _spi = GetComponent<SpriteRenderer>();
         _ani = GetComponent<Animator>();
@@ -187,7 +187,7 @@ public class EnemyHPMaster : PoolAble
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitForSeconds(0.2f);
-            GetDamage(damaged);
+            LiandriDam(damaged);
         }
         _Liandri = false;
     }
@@ -291,8 +291,8 @@ public class EnemyHPMaster : PoolAble
                 if (_playerS.collider != null && _Damaged == false && _die == false)
                 {
                     _Damaged = true;
-                    //rb.velocity = Vector2.zero;
                     StartCoroutine(Damaged());
+                    //rb.velocity = Vector2.zero;
                 }
 
                 RaycastHit2D _platform;
@@ -302,13 +302,13 @@ public class EnemyHPMaster : PoolAble
                 {
                     if (dir == new Vector3(1, 0, 0))
                     {
-                        rb.velocity = new Vector2(0, 0);
+                       // rb.velocity = new Vector2(0, 0);
                         dir = new Vector3(-1, 0, 0);
                         _spi.flipX = true;
                     }
                     else if (dir == new Vector3(-1, 0, 0))
                     {
-                        rb.velocity = new Vector2(0, 0);
+                       // rb.velocity = new Vector2(0, 0);
                         dir = new Vector3(1, 0, 0);
                         _spi.flipX = false;
                     }
@@ -317,7 +317,7 @@ public class EnemyHPMaster : PoolAble
                 {
                     _ani.SetBool("Run", true);
                     if (_Damaged == false && _canMove == 1)
-                        rb.AddForce(dir * speed, ForceMode2D.Impulse);
+                        rb.AddForce(dir * speed * _canMove, ForceMode2D.Impulse);
                 }
 
                 RaycastHit2D _platforms;
@@ -397,7 +397,8 @@ public class EnemyHPMaster : PoolAble
             StopAllCoroutines();
 
             _Damaged = false;
-            if (ItemManager.Instance.GetLiandri() == true && _Liandri == false)
+            _Liandri = false;
+            if (_UI.fillAmount== 1 && _Liandri == false)
             {
                 _Liandri = true;
                 StopCoroutine(LiandriTick(0.5f));
@@ -410,6 +411,18 @@ public class EnemyHPMaster : PoolAble
             {
                 TimeDamager += damage;
             }
+        }
+    }
+    void LiandriDam(float damage)
+    {
+        _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
+        _damageUI.transform.position = transform.position;
+        _damageUI.ShowText(damage);
+        if (GameManager.Instance.Timer() == false || GameManager.Instance.TimeArrange() != 10)
+            _hp -= damage;
+        if (GameManager.Instance.Timer() == true || GameManager.Instance.TimeArrange() == 10)
+        {
+            TimeDamager += damage;
         }
     }
 
