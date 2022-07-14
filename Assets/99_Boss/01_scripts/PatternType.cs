@@ -5,49 +5,73 @@ using UnityEngine;
 public class PatternType : MonoBehaviour
 {
     private Movement movement;
-    private float distance;
+    public float distance;
     private Transform player;
     private Animator animator;
 
-    private bool isOnAttack = false;
+    [SerializeField]
+    private GameObject bulletPrefabs;
 
-    private void Start()
+    //private bool isOnAttack = false;
+
+    [SerializeField]
+    private float groundPositionY; //지면과 Boss의 Collider가 맞닿는 지점
+
+
+    //보스 궁극기 사용시 이동할 지점
+    [SerializeField]
+    private float middleOfMapX; //보스맵의 중앙 X
+    [SerializeField]
+    private float middleOfMapY; //맵의 위쪽
+
+    private void Awake()
     {
         movement = GetComponent<Movement>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        transform.position = new Vector3(3.23f, 1.28f, player.position.z);
         animator = GetComponent<Animator>();
-    }
-    private void Awake()
-    {
-        //Pattern();
-        CloseAttack();
-    }
-    private void Update()
-    {
         distance = Vector3.Distance(player.position, transform.position);
     }
-    private IEnumerator Pattern()
+
+    private void Start()
     {
-        yield return null;
+        StartCoroutine(OpeningPattern());
     }
-    private IEnumerator CloseAttack()
+    private IEnumerator OpeningPattern()
     {
-        isOnAttack = true;
-        while (distance > 3)
+        int num = 3;
+        for(int i = 0; i < 3; i++)
         {
-            movement.ChasePlayer();
+            animator.SetTrigger("T");//Attack
+            StartCoroutine(castBulletAtSide());
+            yield return new WaitForSeconds(0.5f);
+            animator.SetTrigger("A");
+            transform.position = new Vector3(player.position.x + num, groundPositionY, player.position.z);
+            yield return new WaitForSeconds(0.5f);
+            num *= -1;
         }
-        animator.SetTrigger("A");
+        animator.SetTrigger("T");//Attack
+        StartCoroutine(castBulletAtSide());
         yield return new WaitForSeconds(0.5f);
-        Debug.Log("f");
-        yield return null;
+        transform.position = new Vector3(middleOfMapX, middleOfMapY, player.position.z);
+        animator.SetTrigger("C");
+        yield return new WaitForSeconds(0.5f);
+        animator.SetTrigger("L");
     }
-    private IEnumerator Cast()
+
+    private IEnumerator castBulletThreeTime()
     {
-        yield return null;
+        yield return new WaitForSeconds(0.5f);
+        Instantiate(bulletPrefabs, new Vector3(transform.position.x, transform.position.y + 2, 0), Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        Instantiate(bulletPrefabs, new Vector3(transform.position.x, transform.position.y + 2, 0), Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        Instantiate(bulletPrefabs, new Vector3(transform.position.x, transform.position.y + 2, 0), Quaternion.identity);
     }
-    private IEnumerator Telleport()
+    private IEnumerator castBulletAtSide()
     {
+        Instantiate(bulletPrefabs, new Vector3(transform.position.x - 3, transform.position.y + 2, 0), Quaternion.identity);
+        Instantiate(bulletPrefabs, new Vector3(transform.position.x + 3, transform.position.y + 2, 0), Quaternion.identity);
         yield return null;
     }
 }

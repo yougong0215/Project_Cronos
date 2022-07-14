@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ItemManager : Singleton<ItemManager>
 {
-    bool _GiBal= false; // ±â¹ßÇÑ ¹ß°ÉÀ½
-    bool _JungBokJa = false; // Á¤º¹ÀÚ
-    bool _Reverse = false ; // ºÒ»çÀÇ ÅäÅÛ
-    bool _Liandri = false; //¸®¾Èµå¸®
-    bool _Flying = false; // È°°ø
-    bool _Punching = false; // °ø°ÝÈ½¼ö Ãß°¡
+    bool _GiBal= false; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
+    bool _JungBokJa = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    bool _Reverse = false ; // ï¿½Ò»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    bool _Liandri = false; //ï¿½ï¿½ï¿½Èµå¸®
+    bool _Flying = false; // È°ï¿½ï¿½
+    bool _Punching = false; // ï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½ ï¿½ß°ï¿½
 
     int FirstItem = 0;
     int SecondItem = 0;

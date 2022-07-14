@@ -15,8 +15,6 @@ public class Movement : MonoBehaviour
 
     private float movedirection;
 
-    [SerializeField]
-    private int findPlayer;
     private void Start()
     {
         _renderer = gameObject.GetComponent<SpriteRenderer>();
@@ -24,7 +22,6 @@ public class Movement : MonoBehaviour
     }
     private void Update()
     {
-        FindPlayer();
         Flip();
     }
     private void Flip()
@@ -32,31 +29,21 @@ public class Movement : MonoBehaviour
         if (isMoving)
         {
             if (player.position.x > transform.position.x)
-        {
-            _renderer.flipX = true;
-            movedirection = 1;
-        } else if (player.position.x < transform.position.x)
-        {
-            _renderer.flipX = false;
-            movedirection = -1;
-        }
-        }
-    }
-    private void FindPlayer()
-    {
-        if (player.position.x < transform.position.x + findPlayer && player.position.x > transform.position.x - findPlayer)
-        {
-            isMoving = false;
-        }
-        else
-        {
-            isMoving = true;
+            {
+                _renderer.flipX = false;
+                movedirection = 1;
+            } 
+            else if (player.position.x < transform.position.x)
+            {
+                _renderer.flipX = true;
+                movedirection = -1;
+            }
         }
     }
 
     public void ChasePlayer()
     {
-        if(isMoving == true)
+        if(isMoving)
         {
             transform.position += new Vector3(moveSpeed * movedirection * Time.deltaTime, 0, 0);
         }

@@ -9,7 +9,7 @@ TagManager:
   - Pool
   - EnemyAttack
   - DownPlatform
-  - Lin
+  - Platform
   layers:
   - Default
   - TransparentFX
@@ -34,7 +34,7 @@ TagManager:
   - Platform
   - DownPlatform
   - CanPlatForm
-  - 
+  - EnemyAttack
   - 
   - 
   - 
