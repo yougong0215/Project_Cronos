@@ -15,6 +15,7 @@ public class ObjectOrder : PoolAble
     bool isOrder = false;
     bool isAwaken = false;
     bool isPush = false;
+    bool isiPlayer = false;
 
     public Vector3 PlayerCamPos
     {
@@ -43,14 +44,17 @@ public class ObjectOrder : PoolAble
     {
         get
         {
+            _enemy = null;
             if (_enemy == null)
             {
                 try
                 {
+                    isiPlayer = false;
                     _enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Transform>();
                 }
                 catch
                 {
+                    isiPlayer = true;
                     _enemy = Player;
                 }
             }
@@ -64,11 +68,12 @@ public class ObjectOrder : PoolAble
         speed = 20;
         transform.localEulerAngles = new Vector3(0, 0, 0);
         dir = Vector2.up;
-        isOrder = false;
-        isAwaken = false;
+        isOrder = true;
         isPush = false;
+        isAwaken = true;
         _currnetTime = 0;
         _orderTime = 0;
+        StartCoroutine(Attacking());
     }
     // Update is called once per frame
     void Update()
@@ -77,29 +82,46 @@ public class ObjectOrder : PoolAble
     }
     private void FixedUpdate()
     {
+        if(isAwaken == true)
+        {
+            transform.localPosition += transform.up * 0.4f* Time.deltaTime;
+        }
         if (isAwaken == false)
             Awaken();
-
+        //transform.position = new Vector3(Mathf.Clamp(Player.position.x, -5, 5), Mathf.Clamp(Player.position.y, -5, 5));
+    }
+    IEnumerator Attacking()
+    {
+        yield return new WaitForSeconds(0.8f);
+        isAwaken = false;
     }
     void Awaken()
     {
+       
         transform.localPosition += transform.up * speed * Time.deltaTime;
         if (isOrder == false)
         {
             _currnetTime += Time.deltaTime;
             if (_currnetTime >= 1f)
                 isOrder = true;
+            if(_currnetTime >= 3f)
+            {
+                PoolManager.Instance.Push(this);
+            }
         }
+        
         if (isOrder == true)
         {
             _orderTime += Time.deltaTime;
             if (Mathf.Abs(Enemy.position.x - transform.position.x) < _orderTime && Mathf.Abs(Enemy.position.y - transform.position.y) < _orderTime)
             {
+                if(isiPlayer == false)
+                    _currnetTime = 0;
+
                 transform.DOKill();
                 this.transform.rotation = Quaternion.AngleAxis(_angle + 90, Vector3.forward);
                 return;
             }
-            _currnetTime = 0;
             _angle = Mathf.Atan2(transform.position.y - Enemy.position.y, transform.position.x - Enemy.position.x) * Mathf.Rad2Deg;
             //_angle = Mathf.Abs(_angle);
             transform.DORotate(new Vector3(0, 0, _angle + 90), 1f);

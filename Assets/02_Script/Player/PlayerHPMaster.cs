@@ -9,10 +9,11 @@ public class PlayerHPMaster : MonoBehaviour
     float currentTime = 0;
     bool _hpRefill =false;
     bool _damaged =false;
-
+    float guardTime = 0;
     public void GetDamage(int value)
     {
         // 대충 에니메이션 trigger
+        
         if (_damaged ==false)
         {
             _damaged = true;
@@ -28,6 +29,14 @@ public class PlayerHPMaster : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            guardTime += Time.deltaTime;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            guardTime += Time.deltaTime;
+        }
         if(currentTime >= 0.5f)
         {
             _damaged = false;

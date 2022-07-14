@@ -38,6 +38,7 @@ public class MeChu : MonoBehaviour
     int _AttackNow = 0;
     bool _attackNummm = false;
     bool _upAttack = false;
+    bool _isGuard =false;
     void Start()
     {
         AttackNum = 0;
@@ -83,12 +84,32 @@ public class MeChu : MonoBehaviour
     }
     void NormalAttack()
     {
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            _isGuard = true;
+            if (gameObject.name == Left)
+            {
+                transform.localEulerAngles = new Vector3(0, 0, 170);
+                transform.localPosition = new Vector3(0.5f, 0.5f, 0);
+            }
+            if (gameObject.name == Right)
+            {
+                transform.localEulerAngles = new Vector3(0, 0, 190);
+                transform.localPosition = new Vector3(0.5f, 0.5f, 0);
+            }
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _isGuard = false;
+        }
+
         if(_upAttack == true)
         {
             if (gameObject.name == Left)
                 transform.localPosition = new Vector3(1, 1.2f, 0);
             else if (gameObject.name == Right)
                 transform.localPosition = new Vector3(-0.4f, -0.4f);
+            return;
         }
         TimeRush += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Mouse0) && isCanAttack == false)
@@ -243,7 +264,7 @@ public class MeChu : MonoBehaviour
         {
             currentTime += Time.deltaTime;
         }
-        if (currentTime >= 0.8f || TimeRush >= 3f)
+        if ((currentTime >= 0.8f || TimeRush >= 3f) && _isGuard== false)
         {
             TimeRush = 0;
             AttackNum = 0;

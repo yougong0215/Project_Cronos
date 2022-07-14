@@ -213,7 +213,14 @@ public class EnemyHPMaster : PoolAble
 
             if (_timeLeaf1[0].z == _timeLeaf1[29].z)
             {
-                PoolManager.Instance.Push(this);
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    if (transform.GetChild(i).GetComponent<ObjectOrder>())
+                    {
+                        transform.GetChild(i).transform.SetParent(null);
+                    }
+                    PoolManager.Instance.Push(this);
+                }
             }
         }
         TimeLeaf();
