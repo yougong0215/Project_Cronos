@@ -19,10 +19,10 @@ public class UIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         switch (skillType)
         {
-            case SkillType.Bokja: text.text = "Á¤º¹ÀÚ : ¿¬¼Ó°ø°Ý È½¼ö Áõ°¡ | ÃÖÁ¾´ë¹ÌÁö Áõ°¡"; break;
-            case SkillType.fly: text.text = "È°°ø : Space(W)¸¦ holdÇÏ¿© È°°ø"; break;
-            case SkillType.Todam: text.text = "ºÎÈ° : 1¹øÀÇ Á×À½ ¹«½Ã"; break;
-            case SkillType.Lian: text.text = "°íÅë : °ø°Ý¸¶´Ù Æ½´ë¹ÌÁö Ãß°¡"; break;
+            case SkillType.Bokja: text.text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ È½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ | ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"; break;
+            case SkillType.fly: text.text = "È°ï¿½ï¿½ : Space(W)ï¿½ï¿½ holdï¿½Ï¿ï¿½ È°ï¿½ï¿½"; break;
+            case SkillType.Todam: text.text = "ï¿½ï¿½È° : 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"; break;
+            case SkillType.Lian: text.text = "ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½ Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½"; break;
         }
 
         Debug.Log("Enter");
@@ -61,10 +61,10 @@ void Update()
         switch(gameObject.name)
         {
             case "BokJa":
-                _tmp.text = "Á¤º¹ÀÚ : ¿¬¼Ó°ø°ÝÈ½¼ö Áõ°¡";
+                _tmp.text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½È½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½";
                 break;
             case "Fly":
-                _tmp.text = "È°°ø : Space(W)¸¦ ²Ú´­·¯ È°°ø°¡´É";
+                _tmp.text = "È°ï¿½ï¿½ : Space(W)ï¿½ï¿½ ï¿½Ú´ï¿½ï¿½ï¿½ È°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
                 break;
 
         }

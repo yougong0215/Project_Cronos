@@ -45,6 +45,7 @@ public class Bullet : PoolAble
     {
         if(collision.tag == "Player" || collision.tag == "Platform")
         {
+            Debug.Log("Destroy");
             Destroy(gameObject);
         }
     }

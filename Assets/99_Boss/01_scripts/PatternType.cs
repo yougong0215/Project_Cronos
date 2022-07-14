@@ -22,56 +22,41 @@ public class PatternType : MonoBehaviour
     [SerializeField]
     private float middleOfMapX; //보스맵의 중앙 X
     [SerializeField]
-    private float highPointY; //맵의 위쪽
+    private float middleOfMapY; //맵의 위쪽
+
     private void Awake()
     {
-        //Pattern();
         movement = GetComponent<Movement>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        transform.position = new Vector3(3.23f, 1.28f, player.position.z);
         animator = GetComponent<Animator>();
         distance = Vector3.Distance(player.position, transform.position);
     }
 
     private void Start()
     {
-        //StartCoroutine(CloseAttack());
         StartCoroutine(OpeningPattern());
-    }
-    private void Update()
-    {
-        //distance = Vector3.Distance(player.position, transform.position);
-        //if (distance > 3f)
-        //{
-        //    Debug.Log("aaaaaaaaaaaaaaaaa");
-        //    movement.ChasePlayer();   
-        //} else if (distance < 3)
-        //{
-        //    StartCoroutine(CloseAttack());
-        //}
-    }
-    private IEnumerator Pattern()
-    {
-        yield return null;
     }
     private IEnumerator OpeningPattern()
     {
+        int num = 3;
+        for(int i = 0; i < 3; i++)
+        {
+            animator.SetTrigger("T");//Attack
+            StartCoroutine(castBulletAtSide());
+            yield return new WaitForSeconds(0.5f);
+            animator.SetTrigger("A");
+            transform.position = new Vector3(player.position.x + num, groundPositionY, player.position.z);
+            yield return new WaitForSeconds(0.5f);
+            num *= -1;
+        }
         animator.SetTrigger("T");//Attack
         StartCoroutine(castBulletAtSide());
         yield return new WaitForSeconds(0.5f);
-        animator.SetTrigger("A");
-        transform.position = new Vector3(player.position.x + 3, groundPositionY, 0);
-        yield return new WaitForSeconds(1f);
-        animator.SetTrigger("I");
-    }
-    private IEnumerator CloseAttack()
-    {
-        Debug.Log("a");
-        //isOnAttack = true;
-        animator.SetTrigger("A");
+        transform.position = new Vector3(middleOfMapX, middleOfMapY, player.position.z);
+        animator.SetTrigger("C");
         yield return new WaitForSeconds(0.5f);
-        Debug.Log("f");
-        //isOnAttack = false;
-        yield return null;
+        animator.SetTrigger("L");
     }
 
     private IEnumerator castBulletThreeTime()
@@ -87,14 +72,6 @@ public class PatternType : MonoBehaviour
     {
         Instantiate(bulletPrefabs, new Vector3(transform.position.x - 3, transform.position.y + 2, 0), Quaternion.identity);
         Instantiate(bulletPrefabs, new Vector3(transform.position.x + 3, transform.position.y + 2, 0), Quaternion.identity);
-        yield return null;
-    }
-    private IEnumerator Cast()
-    {
-        yield return null;
-    }
-    private IEnumerator Telleport()
-    {
         yield return null;
     }
 }
