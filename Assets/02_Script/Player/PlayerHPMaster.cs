@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerHPMaster : MonoBehaviour
@@ -41,7 +42,7 @@ public class PlayerHPMaster : MonoBehaviour
         return _damaged;
     }
 
-
+    public bool a =false;
     void Update()
     {
         _HPUI.fillAmount = (_hp / 10);
@@ -62,6 +63,8 @@ public class PlayerHPMaster : MonoBehaviour
         currentTime += Time.deltaTime;
         if(_hp <= 0)
         {
+            a = true;
+            SceneManager.LoadScene("GameClear");
             Debug.Log("Áê±Ý");
         }
         if(GameManager.Instance.Timer() == true && _hpRefill == false)

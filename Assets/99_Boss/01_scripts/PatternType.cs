@@ -30,6 +30,7 @@ public class PatternType : MonoBehaviour
     [SerializeField]
     private float middleOfMapY; //맵의 위쪽
     SpriteRenderer _spi;
+    Bullet bi;
 
     private void Awake()
     {

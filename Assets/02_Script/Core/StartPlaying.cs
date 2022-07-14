@@ -10,6 +10,8 @@ public class StartPlaying : MonoBehaviour
     Transform _move;
     [SerializeField] CinemachineConfiner _cam;
     [SerializeField] CinemachineConfiner _cam2;
+    [SerializeField]PlayerMove Pmove;
+    [SerializeField] PlayerHPMaster Php;
     void Start()
     {
         _move = GameObject.Find("Player").GetComponent<Transform>();
@@ -32,6 +34,11 @@ public class StartPlaying : MonoBehaviour
         catch
         {
 
+        }
+        Scene scene = SceneManager.GetActiveScene();
+        if (Pmove.a == true || Php.a == true)
+        {
+            Destroy(gameObject);
         }
     }
 }

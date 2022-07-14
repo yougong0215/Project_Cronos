@@ -29,9 +29,14 @@ public class PlayerMove : MonoBehaviour
     {
        GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
     }
-
+    public bool a = false;
     void Update()
     {
+        if(transform.position.y < -9f)
+        {
+            a = true;
+            SceneManager.LoadScene("GameClear");
+        }
         _iamge.fillAmount = _coljumpCount;
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
         {

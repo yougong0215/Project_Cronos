@@ -43,11 +43,16 @@ public class Bullet : PoolAble
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" || collision.tag == "Platform")
+        Debug.Log(collision.name);
+        if (collision.GetComponent<PlayerHPMaster>())
         {
-            Debug.Log("Destroy");
-            
             collision.GetComponent<PlayerHPMaster>().GetDamage(1);
+            PoolManager.Instance.Push(this);
+        }
+        if (collision.tag == "Player" || collision.tag == "Platform")
+        {
+            Debug.Log("Destroy2");
+            
             PoolManager.Instance.Push(this);
         }
     }
