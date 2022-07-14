@@ -86,6 +86,7 @@ public class MeChu : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.LeftShift))
         {
+            isAttack = true;
             _isGuard = true;
             if (gameObject.name == Left)
             {
@@ -97,6 +98,7 @@ public class MeChu : MonoBehaviour
                 transform.localEulerAngles = new Vector3(0, 0, 190);
                 transform.localPosition = new Vector3(0.5f, 0.5f, 0);
             }
+            return;
         }
         if(Input.GetKeyUp(KeyCode.LeftShift))
         {
@@ -120,7 +122,14 @@ public class MeChu : MonoBehaviour
                 _upAttack = true;
                 if (gameObject.name == Left)
                 {
-                    Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7f, ForceMode2D.Impulse);
+                    if (Player.gameObject.GetComponent<Rigidbody2D>().velocity.y < -0.1f)
+                    {
+                        Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7f, ForceMode2D.Impulse);
+                    }
+                    else
+                    {
+                        Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
+                    }
                     Player.gameObject.GetComponent<PlayerMove>().DownPlatformT();
                     transform.DOLocalMove(new Vector3(1, 1.2f, 0), 0.1f);
                     transform.localEulerAngles = new Vector3(0, 0, 165);

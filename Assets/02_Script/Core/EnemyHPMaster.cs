@@ -302,11 +302,13 @@ public class EnemyHPMaster : PoolAble
                 {
                     if (dir == new Vector3(1, 0, 0))
                     {
+                        rb.velocity = new Vector2(0, 0);
                         dir = new Vector3(-1, 0, 0);
                         _spi.flipX = true;
                     }
                     else if (dir == new Vector3(-1, 0, 0))
                     {
+                        rb.velocity = new Vector2(0, 0);
                         dir = new Vector3(1, 0, 0);
                         _spi.flipX = false;
                     }
