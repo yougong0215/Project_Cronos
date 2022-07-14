@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyHPMaster : PoolAble
 {
@@ -11,13 +12,14 @@ public class EnemyHPMaster : PoolAble
         Papuyrus = 2,
         Enemy1 = 3
     }
+    [SerializeField]float speed;
     Vector3 dir = new Vector3(1, 0, 0);
     bool _Liandri = false;
     float TimeDamager = 0;
     float _currentTime2 = 0;
     bool _Damaged = false;
     bool _triggerDamaged = false;
-    bool _die =false;
+    bool _die = false;
     /// <summary>
     /// 0이거나 1이거나
     /// </summary>
@@ -63,7 +65,7 @@ public class EnemyHPMaster : PoolAble
 
     private void Awake()
     {
-        
+
         rb = GetComponent<Rigidbody2D>();
         _spi = GetComponent<SpriteRenderer>();
         _ani = GetComponent<Animator>();
@@ -102,7 +104,7 @@ public class EnemyHPMaster : PoolAble
                 if (i <= 0)
                     break;
 
-                
+
                 _timeLeaf1[i] = _timeLeaf1[i - 1];
                 _timeLeaf2[i] = _timeLeaf2[i - 1];
             }
@@ -112,13 +114,14 @@ public class EnemyHPMaster : PoolAble
     }
     private void TimeLeaf()
     {
-        
+
         _ani.speed = GameManager.Instance.CanMove();
         if (GameManager.Instance.Timer() == false && _timecode >= 29)
         {
             _ani.enabled = true;
             _ani.Rebind();
             _timecode = 0;
+            _ani.SetBool("Died", false);
         }
         if (GameManager.Instance.Timer() == false && GameManager.Instance.TimeArrange() != 10)
         {
@@ -134,7 +137,7 @@ public class EnemyHPMaster : PoolAble
                     _hp -= TimeDamager;
                     _damageUI = PoolManager.Instance.Pop("DamageText") as Word;
                     _damageUI.transform.position = transform.position;
-                    if (TimeDamager > 500)
+                    if (TimeDamager > 0)
                     {
                         _damageUI.ShowText(TimeDamager);
                     }
@@ -143,10 +146,11 @@ public class EnemyHPMaster : PoolAble
                 }
             }
         }
-        if (GameManager.Instance.Timer() == true)
+
+        if (GameManager.Instance.Timer() == true && _timecode <= 29)
         {
             _die = false;
-            
+
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
             _ani.StopPlayback();
             _ani.enabled = false;
@@ -156,10 +160,11 @@ public class EnemyHPMaster : PoolAble
                 currentTime = 0;
                 if (_timecode >= 29)
                 {
-                    
+
                     _ani.enabled = true;
                     _ani.Rebind();
                     rb.gravityScale = 1;
+                    _ani.SetBool("Died", false);
                     return;
                 }
 
@@ -187,30 +192,39 @@ public class EnemyHPMaster : PoolAble
         _Liandri = false;
     }
 
+    IEnumerator Diei()
+    {
+        yield return new WaitForSeconds(0.1f);
+    }
 
     void Update()
     {
-            if (_hp < 0)
-            {
-            if (_die==false)
-            {
-                _ani.SetBool("Die", true);
-            }
-            _die = true;
 
-            if (_timeLeaf1[0] == _timeLeaf1[29])
-                {
-                    PoolManager.Instance.Push(this);
-                }
-            }
-            TimeLeaf();
-
-            if (transform.position.z != 0)
+        if (_hp < 0)
+        {
+            if (_die == false)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                _ani.SetBool("Died", true);
+                _ani.Play("Die");
+                _die = true;
+                StopAllCoroutines();
             }
-            currentTime += Time.deltaTime;
+            
+
+            if (_timeLeaf1[0].z == _timeLeaf1[29].z)
+            {
+                PoolManager.Instance.Push(this);
+            }
+        }
+        TimeLeaf();
+
+        if (transform.position.z != 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        }
+        currentTime += Time.deltaTime;
     }
+
 
     public void SetMove(int value)
     {
@@ -219,12 +233,16 @@ public class EnemyHPMaster : PoolAble
 
     private void MonsterAIMove()
     {
+        if (_die == true)
+        {
+            return;
+        }
         switch (_monsterType)
         {
             case (int)MonsterCode.Test:
                 _currentTime2 += Time.deltaTime;
                 rb.AddForce(new Vector3(Mathf.Sin(_currentTime2), 0, 0) * 2 * GameManager.Instance.CanMove());
-                
+
                 if (_attackTime >= 2f)
                 {
                     _attackTime = 0;
@@ -232,12 +250,12 @@ public class EnemyHPMaster : PoolAble
                     _purpleBullet.Sex(GetComponent<Rigidbody2D>());
                     _purpleBullet.transform.position = transform.position;
                 }
-                if (rb.velocity.x >= 0.1f)
+                if (rb.velocity.x >= 0.1f && _die == false)
                 {
                     _ani.SetBool("Run", true);
                     _spi.flipX = true;
                 }
-                else if (rb.velocity.x < -0.1f)
+                else if (rb.velocity.x < -0.1f && _die == false)
                 {
                     _ani.SetBool("Run", true);
                     _spi.flipX = false;
@@ -252,30 +270,30 @@ public class EnemyHPMaster : PoolAble
                 break;
             case (int)MonsterCode.Enemy1:
 
-                if(rb.velocity.x >= 4)
+                if (rb.velocity.x >= 4 && _die == false)
                 {
-                    rb.velocity = new Vector2(4,0);
+                    rb.velocity = new Vector2(4, 0);
                 }
-                else if (rb.velocity.x <= -4)
+                else if (rb.velocity.x <= -4 && _die == false)
                 {
                     rb.velocity = new Vector2(-4, 0);
                 }
                 RaycastHit2D _playerS;
 
                 _playerS = Physics2D.Raycast(rb.position, dir, 1f, LayerMask.GetMask("Player"));
-                if (_playerS.collider != null && _Damaged == false)
+                if (_playerS.collider != null && _Damaged == false && _die == false)
                 {
                     _Damaged = true;
-                    rb.velocity = Vector2.zero;
+                    //rb.velocity = Vector2.zero;
                     StartCoroutine(Damaged());
                 }
 
                 RaycastHit2D _platform;
-                _platform = Physics2D.Raycast(rb.position, dir + Vector3.down, 1f, LayerMask.GetMask("Platform"));
-                Debug.DrawRay(rb.position, dir + Vector3.down, new Color(255, 0, 0), 1f);
-                if (_platform.collider == null)
+                _platform = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0,-1,0), 1f, LayerMask.GetMask("Platform"));
+                Debug.DrawRay(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0, -1, 0), new Color(255, 0, 0), 1f);
+                if (_platform.collider == null && _die == false)
                 {
-                    if (dir == new Vector3(1,0,0))
+                    if (dir == new Vector3(1, 0, 0))
                     {
                         dir = new Vector3(-1, 0, 0);
                         _spi.flipX = true;
@@ -286,11 +304,27 @@ public class EnemyHPMaster : PoolAble
                         _spi.flipX = false;
                     }
                 }
-                if (_platform.collider != null)
+                if (_platform.collider != null && _die == false)
                 {
                     _ani.SetBool("Run", true);
-                    if (_Damaged == false)
-                        rb.AddForce(dir * 2, ForceMode2D.Impulse);
+                    if (_Damaged == false && _canMove == 1)
+                        rb.AddForce(dir * speed, ForceMode2D.Impulse);
+                }
+
+                RaycastHit2D _platforms;
+                _platforms = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0), 1f, LayerMask.GetMask("Platform"));
+                if(_platforms.collider !=null)
+                {
+                    if (dir == new Vector3(1, 0, 0))
+                    {
+                        dir = new Vector3(-1, 0, 0);
+                        _spi.flipX = true;
+                    }
+                    else if (dir == new Vector3(-1, 0, 0))
+                    {
+                        dir = new Vector3(1, 0, 0);
+                        _spi.flipX = false;
+                    }
                 }
                 break;
         }
@@ -299,6 +333,11 @@ public class EnemyHPMaster : PoolAble
     IEnumerator Damaged()
     {
         yield return new WaitForSeconds(0.2f);
+        if(_die == true)
+        {
+            _ani.SetBool("Attack", false);
+            yield break;
+        }
         _ani.SetBool("Attack", true);
         _ani.SetBool("Run", false);
         yield return new WaitForSeconds(0.4f);
@@ -337,7 +376,7 @@ public class EnemyHPMaster : PoolAble
 
     }
 
-    
+
 
     public void GetDamage(float damage)
     {

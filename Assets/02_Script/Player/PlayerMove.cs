@@ -22,20 +22,17 @@ public class PlayerMove : MonoBehaviour
         _edge = GetComponent<EdgeCollider2D>();
         _hp = GetComponent<PlayerHPMaster>();
     }
+    public void DownPlatformT()
+    {
+        GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.S))
         {
-            try
-            {
+            DownPlatformT();
 
-                GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
-            }
-            catch
-            {
-
-            }
         }
 
         if (Input.GetButtonDown("Jump") && _jumpCount < _maxJump && _hp.GetDamaged() == false)
@@ -98,25 +95,7 @@ public class PlayerMove : MonoBehaviour
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
 
 
-        if (rigid.velocity.y < 0)
-        {
-            RaycastHit2D _platForm = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
-            RaycastHit2D _downPlatForm = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("DownPlatform"));
-            if (_platForm.collider != null)
-            {
-                if (_platForm.distance < 0.5f)
-                {
-                    //anim.SetBool("isJumping", false);
-                }
-            }
-            if (_downPlatForm.collider != null)
-            {
-                if (_downPlatForm.distance < 0.5f)
-                {
-                    //anim.SetBool("isJumping", false);
-                }
-            }
-        }
+
         Debug.DrawRay(transform.position, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z));
     }
     private void OnCollisionEnter2D(Collision2D collision)

@@ -37,7 +37,7 @@ public class MeChu : MonoBehaviour
     int AttackNumItem = 5;
     int _AttackNow = 0;
     bool _attackNummm = false;
-
+    bool _upAttack = false;
     void Start()
     {
         AttackNum = 0;
@@ -83,10 +83,35 @@ public class MeChu : MonoBehaviour
     }
     void NormalAttack()
     {
+        if(_upAttack == true)
+        {
+            if (gameObject.name == Left)
+                transform.localPosition = new Vector3(1, 1.2f, 0);
+            else if (gameObject.name == Right)
+                transform.localPosition = new Vector3(-0.4f, -0.4f);
+        }
         TimeRush += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Mouse0) && isCanAttack == false)
         {
             isAttack = true;
+            if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)) && _upAttack == false)
+            {
+                _upAttack = true;
+                if (gameObject.name == Left)
+                {
+                    Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7f, ForceMode2D.Impulse);
+                    Player.gameObject.GetComponent<PlayerMove>().DownPlatformT();
+                    transform.DOLocalMove(new Vector3(1, 1.2f, 0), 0.1f);
+                    transform.localEulerAngles = new Vector3(0, 0, 165);
+                }
+                if (gameObject.name == Right)
+                {
+                    transform.DOLocalMove(new Vector3(-0.4f, -0.4f), 0.1f);
+                    transform.localEulerAngles = new Vector3(0, 0, 340);
+                }
+                return;
+            }
+
             if(isDownAttack == true && AttackNum < AttackNumItem)
             {
                 isDownAttackUpper = true;
@@ -229,6 +254,7 @@ public class MeChu : MonoBehaviour
             isDownAttackUpper = false;
             isDownAttakb = false;
             _AttackNow = 0;
+            _upAttack = false;
         }
         if (isAttack == false)
         {
@@ -261,14 +287,23 @@ public class MeChu : MonoBehaviour
                     collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                     StartCoroutine(TurnCam());
                 }
+                
 
                 
             }
 
+            if(_upAttack == true)
+            {
+                collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.5f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<EnemyHPMaster>().GetDamage(10);
+                StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
+                StartCoroutine(TurnCam());
+            }
             if(isDownAttack == true && isDownAttackUpper == false)
             {
                 collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
-                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.5f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.3f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 StartCoroutine(TurnCam());
