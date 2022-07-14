@@ -27,7 +27,7 @@ public class PlayerMove : MonoBehaviour
     }
     public void DownPlatformT()
     {
-       // GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
+       GameObject.FindWithTag("DownPlatform").GetComponent<DownPlatform>().ChangeLayer();
     }
 
     void Update()
