@@ -10,7 +10,8 @@ public class EnemyHPMaster : PoolAble
         Defualt = 0,
         Test = 1,
         Papuyrus = 2,
-        Enemy1 = 3
+        Enemy1 = 3,
+        Wizard = 4
     }
     [SerializeField]float speed;
     Vector3 dir = new Vector3(1, 0, 0);
@@ -36,7 +37,7 @@ public class EnemyHPMaster : PoolAble
     // y = 위치
     // z = 체력
     [SerializeField] float OriginHP;
-    float _hp;
+    [SerializeField]float _hp;
     [SerializeField] Vector2 vector2;
     Rigidbody2D rb;
     float currentTime = 0;
@@ -150,7 +151,7 @@ public class EnemyHPMaster : PoolAble
         if (GameManager.Instance.Timer() == true && _timecode <= 29)
         {
             _die = false;
-
+            Diecurt = 0;
             rb.gravityScale = 1 * GameManager.Instance.CanMove();
             _ani.StopPlayback();
             _ani.enabled = false;
@@ -196,22 +197,24 @@ public class EnemyHPMaster : PoolAble
     {
         yield return new WaitForSeconds(0.1f);
     }
-
+    float Diecurt = 0;
     void Update()
     {
-
+        Debug.Log($"{gameObject.name } : {_die}, {Diecurt}");
         if (_hp < 0)
         {
+            Diecurt += Time.deltaTime;
             if (_die == false)
             {
-                _ani.SetBool("Died", true);
                 _ani.Play("Die");
+                _ani.SetBool("Died", true);
                 _die = true;
+
                 StopAllCoroutines();
             }
             
 
-            if (_timeLeaf1[0].z == _timeLeaf1[29].z)
+            if (Diecurt >= 3f)
             {
                 for (int i = 0; i < transform.childCount; i++)
                 {
@@ -219,8 +222,8 @@ public class EnemyHPMaster : PoolAble
                     {
                         transform.GetChild(i).transform.SetParent(null);
                     }
-                    PoolManager.Instance.Push(this);
                 }
+                PoolManager.Instance.Push(this);
             }
         }
         TimeLeaf();
@@ -240,6 +243,9 @@ public class EnemyHPMaster : PoolAble
 
     private void MonsterAIMove()
     {
+        RaycastHit2D _playerS;
+        RaycastHit2D _platforms;
+        RaycastHit2D _platform;
         if (_die == true)
         {
             return;
@@ -254,7 +260,7 @@ public class EnemyHPMaster : PoolAble
                 {
                     _attackTime = 0;
                     _purpleBullet = PoolManager.Instance.Pop("BulletTest") as PurpleBullet;
-                    _purpleBullet.Sex(GetComponent<Rigidbody2D>());
+                    _purpleBullet.Sex(GetComponent<Rigidbody2D>(), dir.x);
                     _purpleBullet.transform.position = transform.position;
                 }
                 if (rb.velocity.x >= 0.1f && _die == false)
@@ -285,8 +291,6 @@ public class EnemyHPMaster : PoolAble
                 {
                     rb.velocity = new Vector2(-4, 0);
                 }
-                RaycastHit2D _playerS;
-
                 _playerS = Physics2D.Raycast(rb.position, dir, 1f, LayerMask.GetMask("Player"));
                 if (_playerS.collider != null && _Damaged == false && _die == false)
                 {
@@ -295,7 +299,6 @@ public class EnemyHPMaster : PoolAble
                     //rb.velocity = Vector2.zero;
                 }
 
-                RaycastHit2D _platform;
                 _platform = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0,-1,0), 1f, LayerMask.GetMask("Platform"));
                 Debug.DrawRay(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0, -1, 0), new Color(255, 0, 0), 1f);
                 if (_platform.collider == null && _die == false)
@@ -320,7 +323,7 @@ public class EnemyHPMaster : PoolAble
                         rb.AddForce(dir * speed * _canMove, ForceMode2D.Impulse);
                 }
 
-                RaycastHit2D _platforms;
+
                 _platforms = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0), 1f, LayerMask.GetMask("Platform"));
                 if(_platforms.collider !=null)
                 {
@@ -336,9 +339,90 @@ public class EnemyHPMaster : PoolAble
                     }
                 }
                 break;
+
+
+
+            case (int)MonsterCode.Wizard:
+                if (rb.velocity.x >= 2 && _die == false)
+                {
+                    rb.velocity = new Vector2(2, 0);
+                }
+                else if (rb.velocity.x <= -2 && _die == false)
+                {
+                    rb.velocity = new Vector2(-2, 0);
+                }
+                
+
+                _playerS = Physics2D.Raycast(rb.position, dir, 4f, LayerMask.GetMask("Player"));
+                if (_playerS.collider != null && _Damaged == false && _die == false)
+                {
+                    _Damaged = true;
+                    StartCoroutine(Wizard());
+                    //rb.velocity = Vector2.zero;
+                }
+
+                _platform = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0, -1, 0), 1f, LayerMask.GetMask("Platform"));
+                Debug.DrawRay(rb.position, dir.x * new Vector3(1.5f, 0, 0) + new Vector3(0, -1, 0), new Color(255, 0, 0), 1f);
+                if (_platform.collider == null && _die == false)
+                {
+                    if (dir == new Vector3(1, 0, 0))
+                    {
+                        // rb.velocity = new Vector2(0, 0);
+                        dir = new Vector3(-1, 0, 0);
+                        _spi.flipX = true;
+                    }
+                    else if (dir == new Vector3(-1, 0, 0))
+                    {
+                        // rb.velocity = new Vector2(0, 0);
+                        dir = new Vector3(1, 0, 0);
+                        _spi.flipX = false;
+                    }
+                }
+                if (_platform.collider != null && _die == false)
+                {
+                    _ani.SetBool("Run", true);
+                    if (_Damaged == false && _canMove == 1)
+                        rb.AddForce(dir * speed * _canMove, ForceMode2D.Impulse);
+                }
+
+                _platforms = Physics2D.Raycast(rb.position, dir.x * new Vector3(1.5f, 0, 0), 1f, LayerMask.GetMask("Platform"));
+                if (_platforms.collider != null)
+                {
+                    if (dir == new Vector3(1, 0, 0))
+                    {
+                        dir = new Vector3(-1, 0, 0);
+                        _spi.flipX = true;
+                    }
+                    else if (dir == new Vector3(-1, 0, 0))
+                    {
+                        dir = new Vector3(1, 0, 0);
+                        _spi.flipX = false;
+                    }
+                }
+                break;
         }
     }
+    IEnumerator Wizard()
+    {
+        yield return new WaitForSeconds(0.2f);
+        if (_die == true)
+        {
+            yield break;
+        }
+        yield return new WaitForSeconds(0.4f);
+        _triggerDamaged = true;
 
+        _attackTime = 0;
+        _purpleBullet = PoolManager.Instance.Pop("BulletTest") as PurpleBullet;
+        _purpleBullet.Sex(GetComponent<Rigidbody2D>(), dir.x);
+        _purpleBullet.transform.localPosition = transform.localPosition;
+
+        yield return new WaitForSeconds(0.4f);
+
+
+        _Damaged = false;
+
+    }
     IEnumerator Damaged()
     {
         yield return new WaitForSeconds(0.2f);
@@ -376,7 +460,8 @@ public class EnemyHPMaster : PoolAble
             _spi.flipX = false;
         }
 
-
+        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.4f);
         _ani.SetBool("Attack", false);
         yield return new WaitForSeconds(0.2f);
 

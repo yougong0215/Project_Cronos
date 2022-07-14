@@ -305,7 +305,7 @@ public class MeChu : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("몬가있음");
+        //Debug.Log("몬가있음");
         if (collision.GetComponent<EnemyHPMaster>() )
         {
             if ((_AttackNow == 1 || _AttackNow == 2))

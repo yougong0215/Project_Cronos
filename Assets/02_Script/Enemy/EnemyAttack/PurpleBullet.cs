@@ -64,7 +64,7 @@ public class PurpleBullet : PoolAble
     }
 
 
-    public void Sex(Rigidbody2D _ms)
+    public void Sex(Rigidbody2D _ms, float dir_)
     {
         for (int i = 29; i >= 0; i--)
         {
@@ -74,16 +74,10 @@ public class PurpleBullet : PoolAble
         }
         _timeLeaf1[0] = new Vector4(transform.position.x, transform.position.y, currentTime, transform.rotation.z);
         _masterEnemy = _ms;
-        if(_ms.velocity.x >= 0)
-        {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
-            dir = new Vector3(1, 0);
-        }
-        if (_ms.velocity.x < -0f)
-        {
-            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, 1);
-            dir = new Vector3(-1, 0);
-        }
+        dir = new Vector3(dir_, 0, 0);
+        transform.localScale *= dir.x;
+        
+
     }
 
 
@@ -105,7 +99,17 @@ public class PurpleBullet : PoolAble
     {
         if(collision.GetComponent<PlayerHPMaster>())
         {
-            collision.GetComponent<PlayerHPMaster>().GetDamage(1);
+
+            collision.GetComponent<Rigidbody2D>().AddForce(new Vector3(dir.x, 0, 0) + new Vector3(0, 1, 0), ForceMode2D.Impulse);
+
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+
+            }
+            else
+                collision.GetComponent<PlayerHPMaster>().GetDamage(1);
+
+            PoolManager.Instance.Push(this);
         }
     }
 }
