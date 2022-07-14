@@ -19,10 +19,10 @@ public class UIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         switch (skillType)
         {
-            case SkillType.정복자: text.text = "정복자 : 연속공격 횟수 증가 | 최종대미지 증가"; break;
-            case SkillType.활공: text.text = "활공 : Space(W)를 hold하여 활공"; break;
-            case SkillType.불사의토뎀: text.text = "부활 : 1번의 죽음 무시"; break;
-            case SkillType.리안드리: text.text = "고통 : 공격마다 틱대미지 추가"; break;
+            case SkillType.Bokja: text.text = "정복자 : 연속공격 횟수 증가 | 최종대미지 증가"; break;
+            case SkillType.fly: text.text = "활공 : Space(W)를 hold하여 활공"; break;
+            case SkillType.Todam: text.text = "부활 : 1번의 죽음 무시"; break;
+            case SkillType.Lian: text.text = "고통 : 공격마다 틱대미지 추가"; break;
         }
 
         Debug.Log("Enter");
@@ -39,10 +39,10 @@ public class UIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 public enum SkillType
 {
-    정복자,
-    활공,
-    불사의토뎀,
-    리안드리
+    Bokja,
+    fly ,
+    Todam,
+    Lian
 }
 
 /*
