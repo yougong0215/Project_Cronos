@@ -10,6 +10,7 @@ public class PlayerHPMaster : MonoBehaviour
     float currentTime = 0;
     bool _hpRefill =false;
     bool _damaged =false;
+    [SerializeField] AudioClip _au;
     bool guardTime = true;
     [SerializeField] Image _HPUI;
     public void GetDamage(float value)
@@ -23,6 +24,7 @@ public class PlayerHPMaster : MonoBehaviour
         {
             if (_damaged == false)
             {
+                GameManager.Instance.SoundPlay(_au);
                 _damaged = true;
                 currentTime = 0;
                 _hp -= value;

@@ -48,11 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4fadaccfedb13343833953a36ae7479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _au: {fileID: 8300000, guid: a9febe20464c04c438d8bfcecbe25f06, type: 3}
   speed: 3
   _timeLeaf1: []
   OriginHP: 100
   _hp: 0
-  vector2: {x: 0, y: 0}
   _monsterType: 3
 --- !u!212 &7971858473977535435
 SpriteRenderer:

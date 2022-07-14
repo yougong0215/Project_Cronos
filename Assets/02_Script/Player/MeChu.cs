@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class MeChu : MonoBehaviour
 {
+    [SerializeField] AudioClip _au;
     BoxCollider2D _box;
     Rigidbody2D _rigid;
     PlayerMove _playerdirect;
@@ -85,6 +86,7 @@ public class MeChu : MonoBehaviour
             _isGuard = true;
             if (gameObject.name == Left)
             {
+                GameManager.Instance.SoundPlay(_au);
                 transform.localEulerAngles = new Vector3(0, 0, 170);
                 transform.localPosition = new Vector3(0.5f, 0.5f, 0);
             }
@@ -103,7 +105,10 @@ public class MeChu : MonoBehaviour
         if(_upAttack == true)
         {
             if (gameObject.name == Left)
+            {
+                GameManager.Instance.SoundPlay(_au);
                 transform.localPosition = new Vector3(1, 1.2f, 0);
+            }
             else if (gameObject.name == Right)
                 transform.localPosition = new Vector3(-0.4f, -0.4f);
             return;
@@ -123,10 +128,12 @@ public class MeChu : MonoBehaviour
                     
                     if (Player.gameObject.GetComponent<Rigidbody2D>().velocity.y < -0.1f)
                     {
+                        GameManager.Instance.SoundPlay(_au);
                         Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7f, ForceMode2D.Impulse);
                     }
                     else
                     {
+                        GameManager.Instance.SoundPlay(_au);
                         Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
                     }
                     Player.gameObject.GetComponent<PlayerMove>().DownPlatformT();
@@ -151,8 +158,11 @@ public class MeChu : MonoBehaviour
                     if (_attackNummm == true)
                     {
                         if (gameObject.name == Left)
+                        {
+                            GameManager.Instance.SoundPlay(_au);
                             transform.DOLocalMove(new Vector3(Random.Range(-0.4f, 0f), Random.Range(0.2f, 0.7f), 0), 0.1f);
-                        if (gameObject.name == Right)
+                        }
+                            if (gameObject.name == Right)
                         {
                             _box.enabled = true;
                             transform.DOLocalMove(new Vector3(Random.Range(1.6f, 2f), Random.Range(0.2f, 0.7f), 0), 0.1f);
@@ -167,6 +177,7 @@ public class MeChu : MonoBehaviour
                             transform.DOLocalMove(new Vector3(Random.Range(-0.4f, 0f), Random.Range(0.2f, 0.7f), 0), 0.1f);
                         if (gameObject.name == Left)
                         {
+                            GameManager.Instance.SoundPlay(_au);
                             _box.enabled = true;
                             transform.DOLocalMove(new Vector3(Random.Range(1.8f, 2.2f), Random.Range(0.2f, 0.7f), 0), 0.1f);
                             transform.localEulerAngles = new Vector3(0, 0, 90);
@@ -185,6 +196,7 @@ public class MeChu : MonoBehaviour
                     if (gameObject.name == Left)
                         transform.DOLocalMove(new Vector3(Random.Range(-0.4f, 0f), Random.Range(0.2f, 0.7f), 0), 0.1f).OnComplete(() =>
                         {
+                            GameManager.Instance.SoundPlay(_au);
                             transform.DOLocalMove(new Vector3(5, Random.Range(-0.4f, 0f)), 0.1f);
                         });
                 }
@@ -198,6 +210,7 @@ public class MeChu : MonoBehaviour
                 isDownAttakb = true;
                 if (gameObject.name == Left)
                 {
+                    GameManager.Instance.SoundPlay(_au);
                     _box.enabled = true;
                     transform.localPosition = new Vector3(0.5f, 2.2f, 0);
                     transform.DOLocalMove(new Vector3(0, -0.6f, 0), 0.1f).SetEase(Ease.InElastic);
@@ -222,6 +235,7 @@ public class MeChu : MonoBehaviour
             {
                 if (gameObject.name == Left)
                 {
+                    GameManager.Instance.SoundPlay(_au);
                     transform.localPosition = OriginPos;
                     transform.localEulerAngles = OriginRot;
                 }
@@ -242,6 +256,7 @@ public class MeChu : MonoBehaviour
 
                 if (gameObject.name == Left)
                 {
+                    GameManager.Instance.SoundPlay(_au);
                     _box.enabled = true;
                     transform.DOLocalMove(new Vector3(2.5f, 0f, 0), 0.1f);
                     transform.localEulerAngles = new Vector3(0, 0, 85);
