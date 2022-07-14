@@ -21,6 +21,7 @@ public class MeChu : MonoBehaviour
     //[SerializeField] CinemachineVirtualCamera _cam;
     float speed = 0;
     float Force;
+    bool isDownArraAttack = false;
 
     bool isCanAttack = false;
     bool isAttack = false;
@@ -35,7 +36,7 @@ public class MeChu : MonoBehaviour
         Third = 3
     }
     int AttackNum = 0;
-    int AttackNumItem = 39;
+    int AttackNumItem = 5;
     [SerializeField]Image ItemFill;
     int _AttackNow = 0;
     bool _attackNummm = false;
@@ -111,8 +112,10 @@ public class MeChu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && isCanAttack == false)
         {
             isAttack = true;
+
             if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)) && _upAttack == false)
             {
+                
                 _upAttack = true;
                 _box.enabled =true;
                 if (gameObject.name == Left)
@@ -136,10 +139,11 @@ public class MeChu : MonoBehaviour
                     transform.localEulerAngles = new Vector3(0, 0, 340);
                 }
                 currentTime = 0;
-                return;
+                AttackNum = 35;
+                _attackNummm = false;
             }
 
-            if(isDownAttack == true && AttackNum < AttackNumItem)
+            if (isDownAttack == true && AttackNum < AttackNumItem)
             {
                 isDownAttackUpper = true;
                 if (AttackNum < AttackNumItem)
@@ -324,7 +328,7 @@ public class MeChu : MonoBehaviour
             if(_upAttack == true && isDownAttackUpper == false)
             {
                 collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 1f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 2f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 StartCoroutine(TurnCam());
@@ -332,7 +336,7 @@ public class MeChu : MonoBehaviour
             if(isDownAttack == true && isDownAttackUpper == false)
             {
                 collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
-                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.3f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.2f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 StartCoroutine(TurnCam());
@@ -357,7 +361,7 @@ public class MeChu : MonoBehaviour
                     }
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
                     AttackNumItem++;
-                    ItemFill.fillAmount += 1f;// 0.025f;
+                    ItemFill.fillAmount +=  0.025f;
                     StartCoroutine(TurnCam());
                 }
                 StartCoroutine(TurnCam());
@@ -365,7 +369,7 @@ public class MeChu : MonoBehaviour
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 1) * 0.4f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.transform.position = new Vector3(Player.transform.position.x + 2.5f * _player.localScale.x, Player.transform.position.y, 0);
-                collision.GetComponent<EnemyHPMaster>().GetDamage(5 + AttackNum * 1);
+                collision.GetComponent<EnemyHPMaster>().GetDamage(AttackNum * 1);
             }
         }
     }
