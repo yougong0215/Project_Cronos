@@ -10,6 +10,8 @@ TagManager:
   - EnemyAttack
   - DownPlatform
   - Platform
+  - Lin
+  - Sans
   layers:
   - Default
   - TransparentFX

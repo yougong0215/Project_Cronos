@@ -39,14 +39,16 @@ public class Bullet : PoolAble
     {
         Debug.Log("sex");
         yield return new WaitForSeconds(5);
-        Destroy(gameObject);
+        PoolManager.Instance.Push(this);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player" || collision.tag == "Platform")
         {
             Debug.Log("Destroy");
-            Destroy(gameObject);
+            
+            collision.GetComponent<PlayerHPMaster>().GetDamage(1);
+            PoolManager.Instance.Push(this);
         }
     }
 }

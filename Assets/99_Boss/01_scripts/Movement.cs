@@ -43,7 +43,7 @@ public class Movement : MonoBehaviour
 
     public void ChasePlayer()
     {
-        if(isMoving)
+        if(isMoving && GameManager.Instance.Timer() == false)
         {
             transform.position += new Vector3(moveSpeed * movedirection * Time.deltaTime, 0, 0);
         }

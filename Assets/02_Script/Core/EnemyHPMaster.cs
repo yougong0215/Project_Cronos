@@ -40,7 +40,6 @@ public class EnemyHPMaster : PoolAble
     // z = Ã¼·Â
     [SerializeField] float OriginHP;
     [SerializeField] float _hp;
-    [SerializeField] Vector2 vector2;
     Rigidbody2D rb;
     float currentTime = 0;
     Animator _ani;

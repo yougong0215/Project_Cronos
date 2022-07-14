@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3690761463917222990}
   - component: {fileID: 3690761463917223856}
   - component: {fileID: 3690761463917222991}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Sans
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,8 +113,8 @@ GameObject:
   - component: {fileID: 2919560143657288251}
   - component: {fileID: 3225401825670117558}
   - component: {fileID: 3690761465037394667}
-  m_Layer: 0
-  m_Name: BossBullet 1
+  m_Layer: 23
+  m_Name: BossBullet1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosion: {fileID: 3148260601407906657, guid: 4a17969ad57a3d544bde84560f2f63a1, type: 3}
+  _timeLeaf1: []
 --- !u!61 &3690761465037394667
 BoxCollider2D:
   m_ObjectHideFlags: 0
