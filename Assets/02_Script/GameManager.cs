@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
+    AudioSource _audio;
     [SerializeField] Animator image;
     [SerializeField] Image _MPUI;
     float currentTime = 0;
@@ -18,7 +19,10 @@ public class GameManager : Singleton<GameManager>
     bool _TimeStop = false;
     bool _guardSuc = false;
     float TimeCool = 0;
-
+    private void Awake()
+    {
+        _audio = GetComponent<AudioSource>();
+    }
     public void GetGurid()
     {
         _guardSuc = true;
@@ -94,6 +98,16 @@ public class GameManager : Singleton<GameManager>
         if (_bTimereaf == false || _TimeStop == false)
             _MPUI.fillAmount += (Time.deltaTime/10);
     }
+    public void SoundPlay(AudioClip ad)
+    {
+        _audio.PlayOneShot(ad);
+    }
+    public void BGSoundPlay(AudioClip ad)
+    {
+        _audio.Stop();
+        _audio.PlayOneShot(ad);
+    }
+
 
     public float CanMove()
     {

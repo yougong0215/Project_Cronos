@@ -115,10 +115,12 @@ public class ObjectOrder : PoolAble
             dir.Normalize();
         }
     }
+    [SerializeField] AudioClip _au;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<EnemyHPMaster>())
         {
+            GameManager.Instance.SoundPlay(_au);
             _orderTime = 0;
             _currnetTime = 0;
             isOrder = false;
@@ -137,6 +139,7 @@ public class ObjectOrder : PoolAble
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
+                GameManager.Instance.SoundPlay(_au);
                 UI.fillAmount += 0.01f;
 
                 UI.rectTransform.anchoredPosition = new Vector3(UI.rectTransform.position.x, 480, 0);
