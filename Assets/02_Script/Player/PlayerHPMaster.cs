@@ -4,24 +4,56 @@ using UnityEngine;
 
 public class PlayerHPMaster : MonoBehaviour
 {
-    [SerializeField] int _hp = 3;
-    [SerializeField] int _MaxHP = 10;
+    [SerializeField] float _hp = 3;
+    [SerializeField] float _MaxHP = 10;
     float currentTime = 0;
     bool _hpRefill =false;
-
-    public void GetDamage(int value)
+    bool _damaged =false;
+    bool guardTime = true;
+    public void GetDamage(float value)
     {
         // 대충 에니메이션 trigger
-        if (currentTime >= 1f)
+        if (guardTime == true)
         {
-            currentTime = 0;
-            _hp -= value;
+            _hp -= (value / 2);
         }
+        else
+        {
+            if (_damaged == false)
+            {
+                _damaged = true;
+                currentTime = 0;
+                _hp -= value;
+            }
+
+        }
+    }
+    private void Start()
+    {
+        guardTime = false;
+    }
+    public bool GetDamaged()
+    {
+        return _damaged;
     }
 
 
     void Update()
     {
+
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            guardTime = true;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            guardTime = false;
+        }
+        if(currentTime >= 0.5f)
+        {
+            _damaged = false;
+        }
+
         currentTime += Time.deltaTime;
         if(_hp <= 0)
         {

@@ -56,6 +56,7 @@ public class PoolManager : MonoBehaviour
 
     public void Push(PoolAble obj)
     {
+        obj.transform.SetParent(this.transform);
         _pools[obj.name].Push(obj);
     }
 }

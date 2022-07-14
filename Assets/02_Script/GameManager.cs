@@ -14,6 +14,13 @@ public class GameManager : Singleton<GameManager>
     float _canMove = 1;
     float _MoveTimeArrange = 1;
     bool _TimeStop = false;
+    bool _guardSuc = false;
+    float TimeCool = 0;
+
+    public void GetGurid()
+    {
+        _guardSuc = true;
+    }
 
     private void Update()
     {
@@ -47,31 +54,37 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
+
+        if (TimeLeafCool <= 0)
+        {
+            TimeLeafCool = 0;
+        }
         if (_bTimereaf == false)
         {
 
-            if (Input.GetKeyDown(KeyCode.T) && _TimeStop == false && TimeLeafCool <= 0)
+            if (_guardSuc == true)
             {
+                _guardSuc = false;
                 currentTime = 0;
                 _TimeStop = true;
-                TimeLeafCool = 10;
+                TimeCool = 1;
                 _canMove = 0.1f;
                 _MoveTimeArrange = 10;
                 _bTimereaf = false;
             }
-            if (TimeLeafCool <= 0)
+            if (TimeCool <= 0)
             {
-                TimeLeafCool = 0;
+                TimeCool = 0;
             }
             if(_TimeStop == true)
             {
                 currentTime += Time.deltaTime;
-                if(currentTime >= 3f)
+                if(currentTime >= 1f)
                 {
                     Debug.Log("adf");
                     _canMove = 1f;
                     _MoveTimeArrange = 1;
-                    TimeLeafCool = 10;
+                    TimeCool = 3;
                     currentTime = 0;
                     _TimeStop = false;
                 }
