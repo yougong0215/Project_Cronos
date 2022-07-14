@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] float maxSpeed;
@@ -119,6 +119,14 @@ public class PlayerMove : MonoBehaviour
 
 
         Debug.DrawRay(transform.position, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z));
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.name == "BossScene")
+        {
+            transform.position = new Vector3(-7, -3.5f, 0);
+            SceneManager.LoadScene("Stage01_Boss");
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
