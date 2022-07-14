@@ -38,7 +38,7 @@ public class Bullet : PoolAble
     private IEnumerator Destroid()
     {
         Debug.Log("sex");
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(5);
         Destroy(gameObject);
     }
     private void OnTriggerEnter2D(Collider2D collision)
