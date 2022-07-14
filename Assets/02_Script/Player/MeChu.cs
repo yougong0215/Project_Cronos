@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
+using UnityEngine.UI;
 
 public class MeChu : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class MeChu : MonoBehaviour
     Vector3 OriginPos;
     Vector3 OriginRot;
     float currentTime = 0;
-    [SerializeField] CinemachineVirtualCamera _cam;
+    //[SerializeField] CinemachineVirtualCamera _cam;
     float speed = 0;
     float Force;
 
@@ -34,10 +35,12 @@ public class MeChu : MonoBehaviour
         Third = 3
     }
     int AttackNum = 0;
-    int AttackNumItem = 5;
+    int AttackNumItem = 39;
+    [SerializeField]Image ItemFill;
     int _AttackNow = 0;
     bool _attackNummm = false;
-
+    bool _upAttack = false;
+    bool _isGuard =false;
     void Start()
     {
         AttackNum = 0;
@@ -70,23 +73,72 @@ public class MeChu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ItemManager.Instance.GetPunching() == true)
-        {
-            AttackNumItem = 50;
-        }
-        else
-        {
-           AttackNumItem = 5;
-        }
         NormalAttack();
         NotAttacking();
     }
     void NormalAttack()
     {
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            isAttack = true;
+            _isGuard = true;
+            if (gameObject.name == Left)
+            {
+                transform.localEulerAngles = new Vector3(0, 0, 170);
+                transform.localPosition = new Vector3(0.5f, 0.5f, 0);
+            }
+            if (gameObject.name == Right)
+            {
+                transform.localEulerAngles = new Vector3(0, 0, 190);
+                transform.localPosition = new Vector3(0.5f, 0.5f, 0);
+            }
+            return;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _isGuard = false;
+        }
+
+        if(_upAttack == true)
+        {
+            if (gameObject.name == Left)
+                transform.localPosition = new Vector3(1, 1.2f, 0);
+            else if (gameObject.name == Right)
+                transform.localPosition = new Vector3(-0.4f, -0.4f);
+            return;
+        }
         TimeRush += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Mouse0) && isCanAttack == false)
         {
             isAttack = true;
+            if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)) && _upAttack == false)
+            {
+                _upAttack = true;
+                _box.enabled =true;
+                if (gameObject.name == Left)
+                {
+                    
+                    if (Player.gameObject.GetComponent<Rigidbody2D>().velocity.y < -0.1f)
+                    {
+                        Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 7f, ForceMode2D.Impulse);
+                    }
+                    else
+                    {
+                        Player.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
+                    }
+                    Player.gameObject.GetComponent<PlayerMove>().DownPlatformT();
+                    transform.DOLocalMove(new Vector3(1, 1.2f, 0), 0.1f);
+                    transform.localEulerAngles = new Vector3(0, 0, 165);
+                }
+                if (gameObject.name == Right)
+                {
+                    transform.DOLocalMove(new Vector3(-0.4f, -0.4f), 0.1f);
+                    transform.localEulerAngles = new Vector3(0, 0, 340);
+                }
+                currentTime = 0;
+                return;
+            }
+
             if(isDownAttack == true && AttackNum < AttackNumItem)
             {
                 isDownAttackUpper = true;
@@ -176,7 +228,7 @@ public class MeChu : MonoBehaviour
                     //new Vector3(2f, -0.2f, 0)
                     transform.DOLocalMove(new Vector3(2f, -0.2f, 0), 0.1f);
                     transform.localEulerAngles = new Vector3(0, 0, 95);
-                    _box.size = new Vector2(0.32f, 0.64f);
+                    _box.size = new Vector2(0.32f * 2, 0.64f * 2);
                 }
                 currentTime = 0;
             }
@@ -189,7 +241,7 @@ public class MeChu : MonoBehaviour
                     _box.enabled = true;
                     transform.DOLocalMove(new Vector3(2.5f, 0f, 0), 0.1f);
                     transform.localEulerAngles = new Vector3(0, 0, 85);
-                    _box.size = new Vector2(0.32f, 0.64f);
+                    _box.size = new Vector2(0.32f * 2, 0.64f * 2);
                 }
                 if (gameObject.name == Right)
                 {
@@ -218,8 +270,9 @@ public class MeChu : MonoBehaviour
         {
             currentTime += Time.deltaTime;
         }
-        if (currentTime >= 0.8f || TimeRush >= 3f)
+        if ((currentTime >= 0.8f || TimeRush >= 5f) && _isGuard== false)
         {
+            _attackNummm = false;
             TimeRush = 0;
             AttackNum = 0;
             isCanAttack = true;
@@ -229,6 +282,8 @@ public class MeChu : MonoBehaviour
             isDownAttackUpper = false;
             isDownAttakb = false;
             _AttackNow = 0;
+            _upAttack = false;
+            _box.size = new Vector2(0.32f * 2, 0.64f * 2);
         }
         if (isAttack == false)
         {
@@ -261,14 +316,23 @@ public class MeChu : MonoBehaviour
                     collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                     StartCoroutine(TurnCam());
                 }
+                
 
                 
             }
 
+            if(_upAttack == true && isDownAttackUpper == false)
+            {
+                collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 1f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<EnemyHPMaster>().GetDamage(10);
+                StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
+                StartCoroutine(TurnCam());
+            }
             if(isDownAttack == true && isDownAttackUpper == false)
             {
                 collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
-                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.5f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10) * 0.3f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(10);
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 StartCoroutine(TurnCam());
@@ -283,7 +347,7 @@ public class MeChu : MonoBehaviour
                 }
                 if(AttackNum == AttackNumItem)
                 {
-                    if (AttackNumItem == 50)
+                    if (AttackNumItem == 40 && AttackNum == 40)
                     {
                         collision.GetComponent<EnemyHPMaster>().GetDamage(50000);
                     }
@@ -292,11 +356,14 @@ public class MeChu : MonoBehaviour
                         collision.GetComponent<EnemyHPMaster>().GetDamage(10 * AttackNum);
                     }
                     collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * 6f * _playerdirect.GetDirect(), ForceMode2D.Impulse);
+                    AttackNumItem++;
+                    ItemFill.fillAmount += 1f;// 0.025f;
                     StartCoroutine(TurnCam());
                 }
+                StartCoroutine(TurnCam());
                 StopCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
                 StartCoroutine(EnemyMove(collision.GetComponent<EnemyHPMaster>()));
-                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 1) * 1.2f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
+                collision.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 1) * 0.4f * GameManager.Instance.CanMove(), ForceMode2D.Impulse);
                 collision.transform.position = new Vector3(Player.transform.position.x + 2.5f * _player.localScale.x, Player.transform.position.y, 0);
                 collision.GetComponent<EnemyHPMaster>().GetDamage(5 + AttackNum * 1);
             }
