@@ -43,7 +43,7 @@ public class ObjectOrder : PoolAble
     {
         UI = GameObject.FindGameObjectWithTag("Lin").GetComponent<Image>();
     }
-
+    bool GetEnemy = false;
     private void OnEnable()
     {
         
@@ -55,21 +55,23 @@ public class ObjectOrder : PoolAble
         isAwaken = true;
         _currnetTime = 0;
         _orderTime = 0;
+        GetEnemy = false;
         StartCoroutine(Attacking());
-    }
-    // Update is called once per frame
-    void Update()
-    {
 
     }
+    // Update is called once per frame
+
     private void FixedUpdate()
     {
-        if(isAwaken == true)
+        if (GetEnemy == false)
         {
-            transform.localPosition += transform.up * 0.4f* Time.deltaTime;
+            if (isAwaken == true)
+            {
+                transform.localPosition += transform.up * 0.4f * Time.deltaTime;
+            }
+            if (isAwaken == false)
+                Awaken();
         }
-        if (isAwaken == false)
-            Awaken();
         //transform.position = new Vector3(Mathf.Clamp(Player.position.x, -5, 5), Mathf.Clamp(Player.position.y, -5, 5));
     }
     IEnumerator Attacking()
@@ -86,10 +88,6 @@ public class ObjectOrder : PoolAble
             _currnetTime += Time.deltaTime;
             if (_currnetTime >= 1f)
                 isOrder = true;
-            if(_currnetTime >= 3f)
-            {
-                PoolManager.Instance.Push(this);
-            }
         }
         Vector3 point = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
                 Input.mousePosition.y, -Camera.main.transform.position.z));
@@ -148,13 +146,6 @@ public class ObjectOrder : PoolAble
             {
                 transform.position = collision.transform.position;
             }
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.GetComponent<EnemyHPMaster>())
-        {
-            PoolManager.Instance.Push(this);
         }
     }
 

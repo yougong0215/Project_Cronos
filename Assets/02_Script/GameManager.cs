@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] Animator image;
     float currentTime = 0;
     float TimeLeafCool = 0;
     int _timecode;
@@ -34,6 +36,7 @@ public class GameManager : Singleton<GameManager>
                     TimeLeafCool = 10;
                     _TimeStop = false;
                     _bTimereaf = true;
+                    image.SetBool("Leaf", true);
                 }
             }
             currentTime += Time.deltaTime;
@@ -45,6 +48,7 @@ public class GameManager : Singleton<GameManager>
                     currentTime = 0;
                     if (_timecode >= 29)
                     {
+                        image.SetBool("Leaf", false);
                         _bTimereaf = false;
                         _timecode = 0;
                         return;

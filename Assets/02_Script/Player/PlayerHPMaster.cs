@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerHPMaster : MonoBehaviour
 {
-    [SerializeField] float _hp = 3;
+    [SerializeField] float _hp = 10;
     [SerializeField] float _MaxHP = 10;
     float currentTime = 0;
     bool _hpRefill =false;
@@ -59,14 +59,14 @@ public class PlayerHPMaster : MonoBehaviour
         {
             Debug.Log("Áê±Ý");
         }
-        if((GameManager.Instance.Timer() == true || GameManager.Instance.TimeArrange() == 10) && _hpRefill == false)
+        if(GameManager.Instance.Timer() == true && _hpRefill == false)
         {
             _hp += 2;
             _hpRefill = true;
         }
-        else
+        if (GameManager.Instance.Timer() == false )
         {
-            _hpRefill = true;
+            _hpRefill = false;
         }
 
         if (_hp >= _MaxHP)

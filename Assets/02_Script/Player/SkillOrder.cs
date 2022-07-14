@@ -18,16 +18,23 @@ public class SkillOrder : MonoBehaviour
         currentTime += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Mouse1) && currentTime>= 3f)
         {
-            order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
-            order.transform.position = transform.position;
-            order.transform.localEulerAngles = new Vector3(0,0, 330);
-            order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
-            order.transform.position = transform.position;
-            order.transform.localEulerAngles = new Vector3(0,0,30);
-            order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
-            order.transform.position = transform.position;
-            order.transform.localEulerAngles = new Vector3(0, 0, 0);
-            currentTime = 0;
+            StartCoroutine(Corutine());
         }
+    }
+    IEnumerator Corutine()
+    {
+        yield return new WaitForSeconds(0.01f);
+        order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
+        order.transform.position = transform.position;
+        order.transform.localEulerAngles = new Vector3(0, 0, 330);
+        yield return new WaitForSeconds(0.01f);
+        order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
+        order.transform.position = transform.position;
+        order.transform.localEulerAngles = new Vector3(0, 0, 30);
+        yield return new WaitForSeconds(0.01f);
+        order = PoolManager.Instance.Pop("Order1") as ObjectOrder;
+        order.transform.position = transform.position;
+        order.transform.localEulerAngles = new Vector3(0, 0, 0);
+        currentTime = 0;
     }
 }
